@@ -74,6 +74,24 @@ GitHub Repository: https://github.com/YNaljehani/team-red-dashboard-
    - Generates downloadable PowerPoint presentation
    - All fields are OPTIONAL (displays "Not specified" if empty)
 
+8. AI DATA ASSISTANT (Floating Button)
+   - Click purple robot button (bottom-right corner)
+   - Ask natural language questions about the data
+   - Examples: "Who is leading?", "Compare Red and Blue", "Show trends"
+   - Responds based on selected universe and period
+   - Quick suggestion buttons for common queries
+
+9. TOUR GUIDE
+   - Automatically shows for first-time visitors
+   - 6-step walkthrough of all features
+   - "Tour Guide" button in header to restart
+   - Progress dots and Previous/Next navigation
+
+UNIVERSE SELECTION:
+   - Universe 1: First simulation universe data
+   - Universe 2: Second simulation universe data
+   - All Universes: Combined/averaged data from both universes
+
 ================================================================================
                           TECHNICAL DETAILS
 ================================================================================
@@ -159,6 +177,26 @@ METRICS INCLUDED:
 ================================================================================
 
 DATE: January 11, 2026
+
+UPDATE 3: Added "All Universes" Option
+- New dropdown option to view combined statistics from both universes
+- Data is averaged between Universe 1 and Universe 2
+- Works across all tabs and AI Assistant
+- Helper functions: getUniverseData(), getCombinedUniverseData(), getUniverseLabel()
+
+UPDATE 2: Added Tour Guide and Improved AI Icon
+- Welcome tour for first-time visitors (6 steps)
+- Tour stored in localStorage so it only shows once
+- "Tour Guide" button in header to restart anytime
+- AI button redesigned with robot icon and purple gradient
+- "AI" badge and pulse animation for visibility
+
+UPDATE 1: Added Smart Data Assistant
+- Floating chat button (bottom-right)
+- Natural language questions about simulation data
+- Supports: rankings, comparisons, trends, team summaries
+- Quick suggestion buttons
+- Works with selected universe and period
 
 ISSUE: PPT Generator button not working
 
