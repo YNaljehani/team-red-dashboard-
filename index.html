@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEGA CVC Dashboard - MBSC MiM 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgenjs.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgenjs.bundle.js"></script>
     <style>
         :root {
             --red: #e74c3c;
@@ -1363,18 +1363,24 @@
 
         // Generate PowerPoint
         function generatePPT() {
-            const team = document.getElementById('pptTeam').value;
-            const universe = document.getElementById('pptUniverse').value;
-            const members = document.getElementById('pptMembers').value;
-            const decisions = document.getElementById('pptDecisions').value;
-            const worked = document.getElementById('pptWorked').value;
-            const didntWork = document.getElementById('pptDidntWork').value;
-            const concepts = document.getElementById('pptConcepts').value;
-            const influence = document.getElementById('pptInfluence').value;
-            const lessons = document.getElementById('pptLessons').value;
-            const application = document.getElementById('pptApplication').value;
+            try {
+                const team = document.getElementById('pptTeam').value;
+                const universe = document.getElementById('pptUniverse').value;
+                const members = document.getElementById('pptMembers').value;
+                const decisions = document.getElementById('pptDecisions').value;
+                const worked = document.getElementById('pptWorked').value;
+                const didntWork = document.getElementById('pptDidntWork').value;
+                const concepts = document.getElementById('pptConcepts').value;
+                const influence = document.getElementById('pptInfluence').value;
+                const lessons = document.getElementById('pptLessons').value;
+                const application = document.getElementById('pptApplication').value;
 
-            const pptx = new PptxGenJS();
+                if (typeof PptxGenJS === 'undefined') {
+                    alert('PowerPoint library failed to load. Please refresh the page and try again.');
+                    return;
+                }
+
+                const pptx = new PptxGenJS();
             pptx.author = 'MBSC MiM 2026';
             pptx.title = `Team ${team} - MEGA CVC Simulation Analysis`;
             pptx.subject = 'Strategy in Management - Simulation Reflection';
@@ -1463,7 +1469,18 @@
             slide.addText('Mohammed bin Salman College', { x: 0.5, y: 4.0, w: '90%', h: 0.4, fontSize: 18, color: 'AAAAAA', align: 'center' });
             slide.addText('MiM 2026 - Riyadh', { x: 0.5, y: 4.5, w: '90%', h: 0.3, fontSize: 14, color: '888888', align: 'center' });
 
-            pptx.writeFile({ fileName: `Team_${team}_Universe${universe}_Simulation_Analysis.pptx` });
+            pptx.writeFile({ fileName: `Team_${team}_Universe${universe}_Simulation_Analysis.pptx` })
+                .then(() => {
+                    console.log('PowerPoint generated successfully');
+                })
+                .catch(err => {
+                    console.error('Error generating PowerPoint:', err);
+                    alert('Error generating PowerPoint. Please try again.');
+                });
+            } catch (error) {
+                console.error('Error in generatePPT:', error);
+                alert('An error occurred while generating the presentation. Please check console for details.');
+            }
         }
 
         function getRank(universe, period, team, metric) {
