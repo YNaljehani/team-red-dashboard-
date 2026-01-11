@@ -755,6 +755,266 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-5px); }
         }
+
+        /* AI Button Improved */
+        .ai-chat-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+            z-index: 1000;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .ai-chat-btn::before {
+            content: 'AI';
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            background: var(--mbsc-gold);
+            color: #1a1a2e;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 4px 30px rgba(102, 126, 234, 0.8); }
+        }
+
+        .ai-chat-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.7);
+        }
+
+        .ai-chat-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        /* Tour Guide Styles */
+        .tour-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tour-overlay.active {
+            display: flex;
+        }
+
+        .tour-modal {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--accent) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid var(--mbsc-gold);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .tour-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .tour-close:hover {
+            color: #fff;
+        }
+
+        .tour-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--mbsc-gold), #a08020);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .tour-icon svg {
+            width: 45px;
+            height: 45px;
+            fill: #1a1a2e;
+        }
+
+        .tour-modal h2 {
+            color: var(--mbsc-gold);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .tour-modal .tour-subtitle {
+            color: #aaa;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .tour-steps {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .tour-step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #444;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .tour-step-dot.active {
+            background: var(--mbsc-gold);
+            transform: scale(1.3);
+        }
+
+        .tour-content {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tour-content h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .tour-content p {
+            color: #ccc;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .tour-feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(197, 160, 40, 0.2);
+            border: 2px solid var(--mbsc-gold);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .tour-feature-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--mbsc-gold);
+        }
+
+        .tour-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .tour-btn {
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tour-btn-secondary {
+            background: transparent;
+            border: 2px solid #666;
+            color: #aaa;
+        }
+
+        .tour-btn-secondary:hover {
+            border-color: #888;
+            color: #fff;
+        }
+
+        .tour-btn-primary {
+            background: linear-gradient(135deg, var(--mbsc-gold), #a08020);
+            border: none;
+            color: #1a1a2e;
+        }
+
+        .tour-btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(197, 160, 40, 0.4);
+        }
+
+        .tour-skip {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .tour-skip:hover {
+            color: #999;
+        }
+
+        /* Help button in header */
+        .help-tour-btn {
+            background: transparent;
+            border: 1px solid var(--mbsc-gold);
+            color: var(--mbsc-gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s;
+        }
+
+        .help-tour-btn:hover {
+            background: rgba(197, 160, 40, 0.2);
+        }
+
+        .help-tour-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--mbsc-gold);
+        }
     </style>
 </head>
 <body>
@@ -768,6 +1028,10 @@
             </div>
         </div>
         <div class="header-controls">
+            <button class="help-tour-btn" onclick="startTour()">
+                <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+                Tour Guide
+            </button>
             <div class="control-group">
                 <label>Universe</label>
                 <select id="universeSelect" onchange="updateDashboard()">
@@ -1070,11 +1334,45 @@
     </footer>
 
     <!-- AI Data Assistant -->
-    <button class="ai-chat-btn" onclick="toggleAIChat()" title="Data Assistant">
+    <button class="ai-chat-btn" onclick="toggleAIChat()" title="AI Data Assistant - Ask me about the data!">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            <path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zM7.5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S9.83 13 9 13s-1.5-.67-1.5-1.5zM16 17H8v-2h8v2zm-1-4c-.83 0-1.5-.67-1.5-1.5S14.17 10 15 10s1.5.67 1.5 1.5S15.83 13 15 13z"/>
         </svg>
     </button>
+
+    <!-- Tour Guide Overlay -->
+    <div class="tour-overlay" id="tourOverlay">
+        <div class="tour-modal">
+            <button class="tour-close" onclick="closeTour()">&times;</button>
+
+            <div class="tour-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+            </div>
+
+            <h2>Welcome to MEGA CVC Dashboard</h2>
+            <p class="tour-subtitle">Let's take a quick tour of the features</p>
+
+            <div class="tour-steps">
+                <span class="tour-step-dot active" data-step="0"></span>
+                <span class="tour-step-dot" data-step="1"></span>
+                <span class="tour-step-dot" data-step="2"></span>
+                <span class="tour-step-dot" data-step="3"></span>
+                <span class="tour-step-dot" data-step="4"></span>
+                <span class="tour-step-dot" data-step="5"></span>
+            </div>
+
+            <div class="tour-content" id="tourContent">
+                <!-- Content will be dynamically inserted -->
+            </div>
+
+            <div class="tour-buttons">
+                <button class="tour-btn tour-btn-secondary" id="tourPrevBtn" onclick="prevTourStep()">Previous</button>
+                <button class="tour-btn tour-btn-primary" id="tourNextBtn" onclick="nextTourStep()">Next</button>
+            </div>
+
+            <p class="tour-skip" onclick="closeTour()">Skip tour</p>
+        </div>
+    </div>
 
     <div class="ai-chat-panel" id="aiChatPanel">
         <div class="ai-chat-header">
@@ -1761,7 +2059,101 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateDashboard();
+            checkFirstVisit();
         });
+
+        // ==================== TOUR GUIDE ====================
+
+        const tourSteps = [
+            {
+                icon: '<svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>',
+                title: 'Welcome to MEGA CVC Dashboard',
+                description: 'This interactive dashboard helps you analyze performance data from the MEGA Customer Value Challenge simulation. Explore team rankings, financial metrics, and trends across different periods.'
+            },
+            {
+                icon: '<svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>',
+                title: 'Navigation Tabs',
+                description: 'Use the tabs at the top to explore different views: <strong>Overview</strong> for KPIs, <strong>Leaderboard</strong> for rankings, <strong>Financial Analysis</strong> for detailed metrics, <strong>Segments</strong> for market breakdown, <strong>Head-to-Head</strong> for team comparisons, and <strong>Trends</strong> for historical performance.'
+            },
+            {
+                icon: '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>',
+                title: 'Interactive Charts',
+                description: 'All charts are interactive! Hover over bars and lines to see exact values. The dashboard displays revenue, EBIT, share price, market share, ROCE, and more for all five teams.'
+            },
+            {
+                icon: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+                title: 'Universe & Period Selection',
+                description: 'Use the dropdowns in the header to switch between <strong>Universe 1</strong> and <strong>Universe 2</strong>, and select any period from <strong>P5 to P9</strong>. All data updates automatically based on your selection.'
+            },
+            {
+                icon: '<svg viewBox="0 0 24 24"><path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zM7.5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S9.83 13 9 13s-1.5-.67-1.5-1.5zM16 17H8v-2h8v2zm-1-4c-.83 0-1.5-.67-1.5-1.5S14.17 10 15 10s1.5.67 1.5 1.5S15.83 13 15 13z"/></svg>',
+                title: 'AI Data Assistant',
+                description: 'Click the <strong>purple AI button</strong> in the bottom-right corner to chat with our Data Assistant. Ask questions like "Who is leading in revenue?", "Compare Red and Blue teams", or "Show me the revenue trend" for instant analysis!'
+            },
+            {
+                icon: '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
+                title: 'PPT Generator',
+                description: 'Go to the <strong>PPT Generator</strong> tab to create professional PowerPoint presentations. Select your team, fill in your reflection (optional), and generate a presentation with your performance data automatically included!'
+            }
+        ];
+
+        let currentTourStep = 0;
+
+        function startTour() {
+            currentTourStep = 0;
+            document.getElementById('tourOverlay').classList.add('active');
+            updateTourContent();
+        }
+
+        function closeTour() {
+            document.getElementById('tourOverlay').classList.remove('active');
+            localStorage.setItem('tourCompleted', 'true');
+        }
+
+        function updateTourContent() {
+            const step = tourSteps[currentTourStep];
+            const content = document.getElementById('tourContent');
+
+            content.innerHTML = `
+                <div class="tour-feature-icon">${step.icon}</div>
+                <h3>${step.title}</h3>
+                <p>${step.description}</p>
+            `;
+
+            // Update dots
+            document.querySelectorAll('.tour-step-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentTourStep);
+            });
+
+            // Update buttons
+            document.getElementById('tourPrevBtn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
+            document.getElementById('tourNextBtn').textContent = currentTourStep === tourSteps.length - 1 ? 'Get Started' : 'Next';
+        }
+
+        function nextTourStep() {
+            if (currentTourStep < tourSteps.length - 1) {
+                currentTourStep++;
+                updateTourContent();
+            } else {
+                closeTour();
+            }
+        }
+
+        function prevTourStep() {
+            if (currentTourStep > 0) {
+                currentTourStep--;
+                updateTourContent();
+            }
+        }
+
+        // Check if first visit
+        function checkFirstVisit() {
+            if (!localStorage.getItem('tourCompleted')) {
+                setTimeout(() => {
+                    startTour();
+                }, 500);
+            }
+        }
 
         // ==================== AI DATA ASSISTANT ====================
 
