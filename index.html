@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Red - MEGA Simulation Dashboard | Universe 2</title>
+    <title>MEGA CVC Dashboard - MBSC MiM 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgenjs.bundle.min.js"></script>
     <style>
+        :root {
+            --red: #e74c3c;
+            --blue: #3498db;
+            --yellow: #f1c40f;
+            --green: #27ae60;
+            --purple: #9b59b6;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --accent: #0f3460;
+            --light: #e8e8e8;
+            --mbsc-gold: #c5a028;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,18 +28,20 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: var(--light);
             min-height: 100vh;
-            color: #fff;
         }
 
         .header {
-            background: linear-gradient(90deg, #e63946 0%, #c1121f 100%);
+            background: linear-gradient(90deg, var(--darker) 0%, var(--accent) 100%);
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
+            border-bottom: 3px solid var(--mbsc-gold);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-left {
@@ -41,293 +56,84 @@
             border-radius: 8px;
             background: white;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 1.8rem;
+            color: white;
         }
 
-        .header .subtitle {
-            font-size: 14px;
-            opacity: 0.9;
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--mbsc-gold);
             margin-top: 5px;
         }
 
-        .header-right {
-            text-align: right;
-        }
-
-        .header-right .universe {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .header-right .period {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .nav-tabs {
-            background: rgba(255,255,255,0.1);
-            padding: 15px 40px;
+        .header-controls {
             display: flex;
-            gap: 10px;
+            gap: 15px;
+            align-items: center;
             flex-wrap: wrap;
         }
 
-        .nav-tab {
-            padding: 10px 25px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 25px;
-            color: #fff;
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-size: 0.75rem;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .control-group select {
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: var(--darker);
+            color: white;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
+            min-width: 130px;
+        }
+
+        .control-group select:focus {
+            outline: none;
+            border-color: var(--mbsc-gold);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--darker);
+            padding: 0 20px;
+            border-bottom: 1px solid var(--accent);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
             font-weight: 500;
         }
 
         .nav-tab:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-        }
-
-        .nav-tab.active {
-            background: #e63946;
-            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-        }
-
-        .container {
-            padding: 30px 40px;
-            max-width: 1800px;
-            margin: 0 auto;
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .kpi-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .kpi-card.positive {
-            border-left: 4px solid #4ade80;
-        }
-
-        .kpi-card.negative {
-            border-left: 4px solid #f87171;
-        }
-
-        .kpi-card.neutral {
-            border-left: 4px solid #60a5fa;
-        }
-
-        .kpi-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.7;
-            margin-bottom: 8px;
-        }
-
-        .kpi-value {
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .kpi-change {
-            font-size: 13px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .kpi-change.up {
-            color: #4ade80;
-        }
-
-        .kpi-change.down {
-            color: #f87171;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .chart-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .chart-card.full-width {
-            grid-column: span 2;
-        }
-
-        .chart-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
-
-        .chart-container.tall {
-            height: 400px;
-        }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 40px 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .team-legend {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .team-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            font-size: 13px;
-        }
-
-        .team-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .team-dot.red { background: #e63946; }
-        .team-dot.blue { background: #3b82f6; }
-        .team-dot.yellow { background: #eab308; }
-        .team-dot.green { background: #22c55e; }
-        .team-dot.purple { background: #a855f7; }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px 15px;
-            text-align: right;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .data-table th {
-            background: rgba(255,255,255,0.1);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        .data-table th:first-child,
-        .data-table td:first-child {
-            text-align: left;
-        }
-
-        .data-table tr:hover {
             background: rgba(255,255,255,0.05);
         }
 
-        .data-table .highlight {
-            background: rgba(230, 57, 70, 0.2);
+        .nav-tab.active {
+            border-bottom-color: var(--mbsc-gold);
+            color: var(--mbsc-gold);
         }
 
-        .filter-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-select {
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .filter-select option {
-            background: #1a1a2e;
-        }
-
-        .insights-panel {
-            background: linear-gradient(135deg, rgba(230, 57, 70, 0.2) 0%, rgba(230, 57, 70, 0.1) 100%);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-            border: 1px solid rgba(230, 57, 70, 0.3);
-        }
-
-        .insights-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .insight-item {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .insight-item:last-child {
-            border-bottom: none;
-        }
-
-        .insight-icon {
-            font-size: 18px;
+        .main-content {
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
         .tab-content {
@@ -338,76 +144,396 @@
             display: block;
         }
 
-        @media (max-width: 1200px) {
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--accent) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .kpi-card.red { border-left: 4px solid var(--red); }
+        .kpi-card.blue { border-left: 4px solid var(--blue); }
+        .kpi-card.yellow { border-left: 4px solid var(--yellow); }
+        .kpi-card.green { border-left: 4px solid var(--green); }
+        .kpi-card.purple { border-left: 4px solid var(--purple); }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .kpi-team {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1100px) {
             .charts-grid {
                 grid-template-columns: 1fr;
             }
-            .chart-card.full-width {
-                grid-column: span 1;
+        }
+
+        .chart-card {
+            background: var(--darker);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            color: var(--mbsc-gold);
+            font-size: 1.1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Leaderboard Styles */
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .leaderboard-card {
+            background: var(--darker);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .leaderboard-card h3 {
+            margin-bottom: 20px;
+            color: var(--mbsc-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            transition: background 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .rank {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .rank.gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+        .rank.silver { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #000; }
+        .rank.bronze { background: linear-gradient(135deg, #CD7F32, #8B4513); color: #fff; }
+        .rank.normal { background: var(--accent); }
+
+        .team-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .team-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .team-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Head to Head Styles */
+        .h2h-container {
+            background: var(--darker);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .h2h-selectors {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .h2h-team-select {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .h2h-team-select select {
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: 2px solid var(--accent);
+            background: var(--dark);
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .vs-badge {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--mbsc-gold);
+            padding: 10px 20px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .h2h-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .h2h-comparison {
+                grid-template-columns: 1fr;
             }
+        }
+
+        .h2h-metrics {
+            display: grid;
+            gap: 15px;
+        }
+
+        .h2h-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+        }
+
+        .h2h-metric-name {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .h2h-metric-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .h2h-metric-value.winner {
+            color: #2ecc71;
+        }
+
+        .h2h-metric-value.loser {
+            color: #e74c3c;
+        }
+
+        /* PPT Generator Styles */
+        .ppt-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .ppt-card {
+            background: var(--darker);
+            border-radius: 15px;
+            padding: 35px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+        }
+
+        .ppt-card h3 {
+            color: var(--mbsc-gold);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .form-group textarea,
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+            background: var(--dark);
+            color: white;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+        }
+
+        .form-group textarea:focus,
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--mbsc-gold);
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, var(--mbsc-gold), #a08020);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+        .generate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(197, 160, 40, 0.4);
+        }
+
+        .team-color-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* Data Table Styles */
+        .data-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .data-table th {
+            background: var(--accent);
+            color: var(--mbsc-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .data-table th:first-child,
+        .data-table td:first-child {
+            text-align: left;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: var(--darker);
+            border-top: 1px solid var(--accent);
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            height: 40px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .footer p {
+            color: #666;
+            font-size: 0.85rem;
         }
 
         @media (max-width: 768px) {
             .header {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
+                padding: 15px 20px;
             }
-            .header-right {
-                text-align: center;
+            .header h1 {
+                font-size: 1.3rem;
             }
-            .container {
-                padding: 20px;
+            .main-content {
+                padding: 15px;
             }
-        }
-
-        .ranking-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .rank-number {
-            font-size: 24px;
-            font-weight: 700;
-            width: 40px;
-            text-align: center;
-        }
-
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
-
-        .rank-info {
-            flex: 1;
-        }
-
-        .rank-team {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .rank-value {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
         }
     </style>
 </head>
@@ -416,1016 +542,951 @@
         <div class="header-left">
             <img src="mbsc-logo.png" alt="MBSC Logo" class="header-logo">
             <div>
-                <h1>Team Red Performance Dashboard</h1>
-                <div class="subtitle">MEGA Learning Simulation - Global Customer Value Challenge</div>
+                <h1>MEGA CVC Performance Dashboard</h1>
+                <div class="subtitle">Global Customer Value Challenge - MiM 2026 Riyadh</div>
                 <div class="subtitle">Mohammed bin Salman College of Business & Entrepreneurship</div>
             </div>
         </div>
-        <div class="header-right">
-            <div class="universe">Universe 2</div>
-            <div class="period">Periods 5-9 Analysis</div>
-            <div class="period">MiM 2026 - Riyadh</div>
+        <div class="header-controls">
+            <div class="control-group">
+                <label>Universe</label>
+                <select id="universeSelect" onchange="updateDashboard()">
+                    <option value="1">Universe 1</option>
+                    <option value="2" selected>Universe 2</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Period</label>
+                <select id="periodSelect" onchange="updateDashboard()">
+                    <option value="P5">Period 5</option>
+                    <option value="P6">Period 6</option>
+                    <option value="P7">Period 7</option>
+                    <option value="P8">Period 8</option>
+                    <option value="P9" selected>Period 9</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Focus Team</label>
+                <select id="teamSelect" onchange="updateDashboard()">
+                    <option value="all">All Teams</option>
+                    <option value="Red">Red</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Yellow">Yellow</option>
+                    <option value="Green">Green</option>
+                    <option value="Purple">Purple</option>
+                </select>
+            </div>
         </div>
     </header>
 
     <nav class="nav-tabs">
-        <button class="nav-tab active" onclick="showTab('overview')">Overview</button>
-        <button class="nav-tab" onclick="showTab('financial')">Financial Performance</button>
-        <button class="nav-tab" onclick="showTab('segments')">Product Segments</button>
-        <button class="nav-tab" onclick="showTab('competition')">Competitive Analysis</button>
-        <button class="nav-tab" onclick="showTab('trends')">Trends & Forecasts</button>
+        <div class="nav-tab active" onclick="switchTab('overview')">Overview</div>
+        <div class="nav-tab" onclick="switchTab('leaderboard')">Leaderboard</div>
+        <div class="nav-tab" onclick="switchTab('financial')">Financial Analysis</div>
+        <div class="nav-tab" onclick="switchTab('segments')">Segments</div>
+        <div class="nav-tab" onclick="switchTab('headtohead')">Head-to-Head</div>
+        <div class="nav-tab" onclick="switchTab('trends')">Trends</div>
+        <div class="nav-tab" onclick="switchTab('pptgen')">PPT Generator</div>
     </nav>
 
-    <div class="container">
-        <!-- Team Legend -->
-        <div class="team-legend">
-            <div class="team-badge"><span class="team-dot red"></span> Red (Our Team)</div>
-            <div class="team-badge"><span class="team-dot blue"></span> Blue</div>
-            <div class="team-badge"><span class="team-dot yellow"></span> Yellow</div>
-            <div class="team-badge"><span class="team-dot green"></span> Green</div>
-            <div class="team-badge"><span class="team-dot purple"></span> Purple</div>
-        </div>
-
-        <!-- OVERVIEW TAB -->
+    <main class="main-content">
+        <!-- Overview Tab -->
         <div id="overview" class="tab-content active">
-            <div class="kpi-grid">
-                <div class="kpi-card positive">
-                    <div class="kpi-label">Total Revenue (P9 R1)</div>
-                    <div class="kpi-value">19,325</div>
-                    <div class="kpi-change up">+0.4% from P8</div>
-                </div>
-                <div class="kpi-card positive">
-                    <div class="kpi-label">EBIT (P9 R1)</div>
-                    <div class="kpi-value">1,589</div>
-                    <div class="kpi-change up">Profitable!</div>
-                </div>
-                <div class="kpi-card positive">
-                    <div class="kpi-label">ROCE (P9 R1)</div>
-                    <div class="kpi-value">5.9%</div>
-                    <div class="kpi-change up">+6.5% from P8</div>
-                </div>
-                <div class="kpi-card positive">
-                    <div class="kpi-label">Share Price (P9 R1)</div>
-                    <div class="kpi-value">19</div>
-                    <div class="kpi-change up">+90% from P8</div>
-                </div>
-                <div class="kpi-card neutral">
-                    <div class="kpi-label">Cash Position</div>
-                    <div class="kpi-value">25,922</div>
-                    <div class="kpi-change up">Strong liquidity</div>
-                </div>
-                <div class="kpi-card neutral">
-                    <div class="kpi-label">Employee Morale</div>
-                    <div class="kpi-value">59%</div>
-                    <div class="kpi-change down">-8% from P8</div>
-                </div>
-            </div>
-
+            <div class="kpi-grid" id="overviewKPIs"></div>
             <div class="charts-grid">
                 <div class="chart-card">
-                    <div class="chart-title">Revenue Trend (P5-P9)</div>
+                    <h3>Revenue by Team (Current Period)</h3>
                     <div class="chart-container">
-                        <canvas id="revenueTrendChart"></canvas>
+                        <canvas id="revenueChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">EBIT Evolution (P5-P9)</div>
+                    <h3>EBIT Comparison</h3>
                     <div class="chart-container">
-                        <canvas id="ebitTrendChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card full-width">
-                    <div class="chart-title">Team Rankings by Total EBIT (P9 Region 1)</div>
-                    <div class="chart-container">
-                        <canvas id="rankingChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="insights-panel">
-                <div class="insights-title">Key Insights for Team Red</div>
-                <div class="insight-item">
-                    <span class="insight-icon">+</span>
-                    <span><strong>Strong Recovery:</strong> Team Red achieved profitability in P9 with EBIT of 1,589 after losses in P8 (-197)</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">+</span>
-                    <span><strong>Image Segment Leader:</strong> Highest EBIT (2,459) in Image CVC2020 segment in P9 R1</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">+</span>
-                    <span><strong>Low Cost Excellence:</strong> Leading in Low Cost segment with 502 EBIT in P9 R1</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">!</span>
-                    <span><strong>Watch:</strong> Family segment showing losses (-424 EBIT in P9 R1) - needs strategic review</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">!</span>
-                    <span><strong>Watch:</strong> Eco segment struggling (-949 EBIT in P9 R1) - consider exit or turnaround strategy</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- FINANCIAL TAB -->
-        <div id="financial" class="tab-content">
-            <h2 class="section-title">Financial Performance Analysis</h2>
-
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-title">Revenue by Period - All Teams</div>
-                    <div class="chart-container tall">
-                        <canvas id="revenueComparisonChart"></canvas>
+                        <canvas id="ebitChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">ROCE Comparison (%)</div>
-                    <div class="chart-container tall">
-                        <canvas id="roceChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Share Price Evolution</div>
+                    <h3>Share Price Performance</h3>
                     <div class="chart-container">
                         <canvas id="sharePriceChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">Cash Position Trend</div>
-                    <div class="chart-container">
-                        <canvas id="cashChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card full-width">
-                    <div class="chart-title">Accumulated Retained Earnings (ARE)</div>
-                    <div class="chart-container">
-                        <canvas id="areChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-title">Financial Summary Table (P9 Region 1)</div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th>Red</th>
-                            <th>Blue</th>
-                            <th>Yellow</th>
-                            <th>Green</th>
-                            <th>Purple</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlight">
-                            <td>Sales Revenue</td>
-                            <td>19,325</td>
-                            <td>15,742</td>
-                            <td>9,121</td>
-                            <td>18,236</td>
-                            <td>24,406</td>
-                        </tr>
-                        <tr>
-                            <td>EBIT</td>
-                            <td>1,589</td>
-                            <td>108</td>
-                            <td>-3,552</td>
-                            <td>70</td>
-                            <td>2,769</td>
-                        </tr>
-                        <tr>
-                            <td>ARE</td>
-                            <td>-14,850</td>
-                            <td>-13,718</td>
-                            <td>-24,923</td>
-                            <td>-32,317</td>
-                            <td>-6,332</td>
-                        </tr>
-                        <tr>
-                            <td>ROCE</td>
-                            <td>5.9%</td>
-                            <td>0.3%</td>
-                            <td>-16.1%</td>
-                            <td>0.3%</td>
-                            <td>9.1%</td>
-                        </tr>
-                        <tr>
-                            <td>Share Price</td>
-                            <td>19</td>
-                            <td>10</td>
-                            <td>7</td>
-                            <td>5</td>
-                            <td>135</td>
-                        </tr>
-                        <tr>
-                            <td>Current Cash</td>
-                            <td>25,922</td>
-                            <td>18,999</td>
-                            <td>24,088</td>
-                            <td>20,723</td>
-                            <td>24,054</td>
-                        </tr>
-                        <tr>
-                            <td>Leverage %</td>
-                            <td>56%</td>
-                            <td>53%</td>
-                            <td>53%</td>
-                            <td>171%</td>
-                            <td>35%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- SEGMENTS TAB -->
-        <div id="segments" class="tab-content">
-            <h2 class="section-title">Product Segment Analysis</h2>
-
-            <div class="filter-bar">
-                <select class="filter-select" id="periodFilter" onchange="updateSegmentCharts()">
-                    <option value="p9r1">Period 9 - Region 1</option>
-                    <option value="p9r2">Period 9 - Region 2</option>
-                    <option value="p8">Period 8</option>
-                    <option value="p7">Period 7</option>
-                    <option value="p6">Period 6</option>
-                    <option value="p5">Period 5</option>
-                </select>
-            </div>
-
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-title">EBIT by Segment - Team Red</div>
-                    <div class="chart-container">
-                        <canvas id="segmentEbitChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Market Share by Segment (%)</div>
+                    <h3>Market Share Distribution</h3>
                     <div class="chart-container">
                         <canvas id="marketShareChart"></canvas>
                     </div>
                 </div>
-                <div class="chart-card">
-                    <div class="chart-title">Revenue by Segment</div>
-                    <div class="chart-container">
-                        <canvas id="segmentRevenueChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Price Positioning</div>
-                    <div class="chart-container">
-                        <canvas id="priceChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-card full-width">
-                <div class="chart-title">Segment Performance Comparison (P9 Region 1)</div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Segment</th>
-                            <th>Price</th>
-                            <th>Demand</th>
-                            <th>Market Share</th>
-                            <th>Revenue</th>
-                            <th>EBIT</th>
-                            <th>ROCE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Low Cost CVC2020</td>
-                            <td>35</td>
-                            <td>83</td>
-                            <td>17%</td>
-                            <td>2,905</td>
-                            <td>502</td>
-                            <td>15.5%</td>
-                        </tr>
-                        <tr>
-                            <td>Family CVC2020</td>
-                            <td>68</td>
-                            <td>63</td>
-                            <td>17%</td>
-                            <td>4,284</td>
-                            <td>-424</td>
-                            <td>-4.2%</td>
-                        </tr>
-                        <tr>
-                            <td>Eco CVC2020</td>
-                            <td>69</td>
-                            <td>90</td>
-                            <td>27%</td>
-                            <td>2,898</td>
-                            <td>-949</td>
-                            <td>-27.7%</td>
-                        </tr>
-                        <tr class="highlight">
-                            <td>Image CVC2020</td>
-                            <td>149</td>
-                            <td>62</td>
-                            <td>22%</td>
-                            <td>9,238</td>
-                            <td>2,459</td>
-                            <td>23.5%</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
 
-        <!-- COMPETITION TAB -->
-        <div id="competition" class="tab-content">
-            <h2 class="section-title">Competitive Analysis</h2>
+        <!-- Leaderboard Tab -->
+        <div id="leaderboard" class="tab-content">
+            <div class="leaderboard-container" id="leaderboardContainer"></div>
+        </div>
 
-            <div class="charts-grid">
-                <div class="chart-card full-width">
-                    <div class="chart-title">EBIT Comparison by Segment (P9 Region 1)</div>
-                    <div class="chart-container tall">
-                        <canvas id="competitiveEbitChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Engineering Appeal Comparison</div>
-                    <div class="chart-container">
-                        <canvas id="engineeringChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Marketing Appeal Comparison</div>
-                    <div class="chart-container">
-                        <canvas id="marketingChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
+        <!-- Financial Tab -->
+        <div id="financial" class="tab-content">
             <div class="chart-card">
-                <div class="chart-title">Team Rankings (P9 Region 1)</div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
-                    <div>
-                        <h4 style="margin-bottom: 15px; opacity: 0.8;">By Revenue</h4>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-1">1</div>
-                            <div class="rank-info">
-                                <div class="rank-team">Purple</div>
-                                <div class="rank-value">24,406</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: #a855f7;"></div></div>
-                            </div>
-                        </div>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-2">2</div>
-                            <div class="rank-info">
-                                <div class="rank-team" style="color: #e63946;">Red (Us)</div>
-                                <div class="rank-value">19,325</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 79%; background: #e63946;"></div></div>
-                            </div>
-                        </div>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-3">3</div>
-                            <div class="rank-info">
-                                <div class="rank-team">Green</div>
-                                <div class="rank-value">18,236</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 75%; background: #22c55e;"></div></div>
-                            </div>
-                        </div>
+                <h3>Complete Financial Overview - All Teams</h3>
+                <div class="data-table-container">
+                    <table class="data-table" id="financialTable"></table>
+                </div>
+            </div>
+            <div class="charts-grid" style="margin-top: 25px;">
+                <div class="chart-card">
+                    <h3>ROCE Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="roceChart"></canvas>
                     </div>
-                    <div>
-                        <h4 style="margin-bottom: 15px; opacity: 0.8;">By EBIT</h4>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-1">1</div>
-                            <div class="rank-info">
-                                <div class="rank-team">Purple</div>
-                                <div class="rank-value">2,769</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: #a855f7;"></div></div>
-                            </div>
-                        </div>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-2">2</div>
-                            <div class="rank-info">
-                                <div class="rank-team" style="color: #e63946;">Red (Us)</div>
-                                <div class="rank-value">1,589</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 57%; background: #e63946;"></div></div>
-                            </div>
-                        </div>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-3">3</div>
-                            <div class="rank-info">
-                                <div class="rank-team">Blue</div>
-                                <div class="rank-value">108</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 4%; background: #3b82f6;"></div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 style="margin-bottom: 15px; opacity: 0.8;">By Share Price</h4>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-1">1</div>
-                            <div class="rank-info">
-                                <div class="rank-team">Purple</div>
-                                <div class="rank-value">135</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: #a855f7;"></div></div>
-                            </div>
-                        </div>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-2">2</div>
-                            <div class="rank-info">
-                                <div class="rank-team" style="color: #e63946;">Red (Us)</div>
-                                <div class="rank-value">19</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 14%; background: #e63946;"></div></div>
-                            </div>
-                        </div>
-                        <div class="ranking-card">
-                            <div class="rank-number rank-3">3</div>
-                            <div class="rank-info">
-                                <div class="rank-team">Blue</div>
-                                <div class="rank-value">10</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: 7%; background: #3b82f6;"></div></div>
-                            </div>
-                        </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Cash Position</h3>
+                    <div class="chart-container">
+                        <canvas id="cashChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TRENDS TAB -->
-        <div id="trends" class="tab-content">
-            <h2 class="section-title">Historical Trends & Analysis</h2>
-
+        <!-- Segments Tab -->
+        <div id="segments" class="tab-content">
             <div class="charts-grid">
-                <div class="chart-card full-width">
-                    <div class="chart-title">Team Red - Complete Performance Timeline</div>
-                    <div class="chart-container tall">
-                        <canvas id="timelineChart"></canvas>
+                <div class="chart-card">
+                    <h3>Low Cost Segment - Revenue by Team</h3>
+                    <div class="chart-container">
+                        <canvas id="lowCostChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">Employee Morale Trend</div>
+                    <h3>Family Segment - Revenue by Team</h3>
                     <div class="chart-container">
-                        <canvas id="moraleChart"></canvas>
+                        <canvas id="familyChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">HR & Quality Index</div>
+                    <h3>Eco Segment - Revenue by Team</h3>
                     <div class="chart-container">
-                        <canvas id="qualityChart"></canvas>
+                        <canvas id="ecoChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">CO2 Emissions Trend</div>
+                    <h3>Image CVC2020 Segment - Revenue by Team</h3>
                     <div class="chart-container">
-                        <canvas id="co2Chart"></canvas>
+                        <canvas id="imageChart"></canvas>
                     </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Leverage Ratio Trend</div>
-                    <div class="chart-container">
-                        <canvas id="leverageChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="insights-panel">
-                <div class="insights-title">Strategic Recommendations</div>
-                <div class="insight-item">
-                    <span class="insight-icon">1</span>
-                    <span><strong>Double Down on Image:</strong> Our strongest segment with 23.5% ROCE. Increase capacity and marketing investment.</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">2</span>
-                    <span><strong>Optimize Low Cost:</strong> Profitable segment (15.5% ROCE). Focus on cost efficiency and volume.</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">3</span>
-                    <span><strong>Turnaround Family:</strong> Negative EBIT needs attention. Review pricing strategy and marketing spend.</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">4</span>
-                    <span><strong>Eco Strategy:</strong> Consider reducing exposure or finding niche positioning to stop bleeding.</span>
-                </div>
-                <div class="insight-item">
-                    <span class="insight-icon">5</span>
-                    <span><strong>Employee Morale:</strong> Declining trend (59%) - invest in HR & Quality to improve productivity.</span>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Head to Head Tab -->
+        <div id="headtohead" class="tab-content">
+            <div class="h2h-container">
+                <div class="h2h-selectors">
+                    <div class="h2h-team-select">
+                        <label>Team 1</label>
+                        <select id="h2hTeam1" onchange="updateH2H()">
+                            <option value="Red">Red</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Yellow">Yellow</option>
+                            <option value="Green">Green</option>
+                            <option value="Purple">Purple</option>
+                        </select>
+                    </div>
+                    <div class="vs-badge">VS</div>
+                    <div class="h2h-team-select">
+                        <label>Team 2</label>
+                        <select id="h2hTeam2" onchange="updateH2H()">
+                            <option value="Red">Red</option>
+                            <option value="Blue" selected>Blue</option>
+                            <option value="Yellow">Yellow</option>
+                            <option value="Green">Green</option>
+                            <option value="Purple">Purple</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="h2h-comparison" id="h2hComparison"></div>
+                <div class="charts-grid" style="margin-top: 30px;">
+                    <div class="chart-card">
+                        <h3>Performance Comparison Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="h2hTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Segment Performance Comparison</h3>
+                        <div class="chart-container">
+                            <canvas id="h2hSegmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trends Tab -->
+        <div id="trends" class="tab-content">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Revenue Trend (P5-P9)</h3>
+                    <div class="chart-container">
+                        <canvas id="revenueTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>EBIT Trend (P5-P9)</h3>
+                    <div class="chart-container">
+                        <canvas id="ebitTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Share Price Trend (P5-P9)</h3>
+                    <div class="chart-container">
+                        <canvas id="shareTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>ROCE Trend (P5-P9)</h3>
+                    <div class="chart-container">
+                        <canvas id="roceTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PPT Generator Tab -->
+        <div id="pptgen" class="tab-content">
+            <div class="ppt-container">
+                <div class="ppt-card">
+                    <h3>Generate Presentation</h3>
+                    <p style="color: #aaa; margin-bottom: 20px;">Create a professional PowerPoint presentation based on MBSC identity and your team's performance.</p>
+
+                    <div class="form-group">
+                        <label>Select Your Team</label>
+                        <select id="pptTeam" onchange="updatePptColorPreview()">
+                            <option value="Red">Team Red</option>
+                            <option value="Blue">Team Blue</option>
+                            <option value="Yellow">Team Yellow</option>
+                            <option value="Green">Team Green</option>
+                            <option value="Purple">Team Purple</option>
+                        </select>
+                        <div class="team-color-preview">
+                            <span>Team Color:</span>
+                            <div class="color-swatch" id="teamColorPreview" style="background: #e74c3c;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Universe</label>
+                        <select id="pptUniverse">
+                            <option value="1">Universe 1</option>
+                            <option value="2" selected>Universe 2</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Team Members (comma separated)</label>
+                        <input type="text" id="pptMembers" placeholder="e.g., Ahmed, Sarah, Mohammed, Fatima">
+                    </div>
+                </div>
+
+                <div class="ppt-card">
+                    <h3>1. Description of Simulation Experience</h3>
+                    <div class="form-group">
+                        <label>Describe your key decisions throughout the simulation (pricing, marketing, R&D, etc.)</label>
+                        <textarea id="pptDecisions" placeholder="Describe the major strategic decisions your team made..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>What worked well?</label>
+                        <textarea id="pptWorked" placeholder="What strategies and decisions led to positive outcomes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>What didn't work as expected?</label>
+                        <textarea id="pptDidntWork" placeholder="What strategies didn't deliver expected results and why..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ppt-card">
+                    <h3>2. Reflection Based on Strategy Concepts</h3>
+                    <div class="form-group">
+                        <label>Which strategy concepts from the course did you apply? (e.g., Porter's Five Forces, SWOT, Value Chain, Competitive Advantage)</label>
+                        <textarea id="pptConcepts" placeholder="Describe strategy frameworks and concepts you applied..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>How did these concepts influence your decisions?</label>
+                        <textarea id="pptInfluence" placeholder="Explain how theory guided your practical decisions..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ppt-card">
+                    <h3>3. Lessons Learned</h3>
+                    <div class="form-group">
+                        <label>Key takeaways from the simulation experience</label>
+                        <textarea id="pptLessons" placeholder="What are the main lessons you'll take away from this simulation..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>How will you apply these lessons in real business scenarios?</label>
+                        <textarea id="pptApplication" placeholder="How can these learnings be applied in your career..."></textarea>
+                    </div>
+                </div>
+
+                <button class="generate-btn" onclick="generatePPT()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    Generate PowerPoint
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <img src="mbsc-logo.png" alt="MBSC" class="footer-logo">
+        <p>MEGA Learning Simulation Dashboard - Mohammed bin Salman College</p>
+        <p style="margin-top: 5px;">MiM 2026 - Riyadh, Saudi Arabia</p>
+    </footer>
 
     <script>
-        // Color palette
-        const colors = {
-            red: '#e63946',
-            blue: '#3b82f6',
-            yellow: '#eab308',
-            green: '#22c55e',
-            purple: '#a855f7'
-        };
-
-        const teamColors = [colors.red, colors.blue, colors.yellow, colors.green, colors.purple];
-        const teamNames = ['Red', 'Blue', 'Yellow', 'Green', 'Purple'];
-
-        // Data from PDFs
-        const data = {
-            periods: ['P5', 'P6', 'P7', 'P8', 'P9 R1'],
-            revenue: {
-                red: [14410, 11525, 19032, 19251, 19325],
-                blue: [15857, 17072, 17072, 20560, 15742],
-                yellow: [17170, 16085, 15309, 15938, 9121],
-                green: [15237, 12108, 16383, 14397, 18236],
-                purple: [18266, 22331, 20862, 23351, 24406]
-            },
-            ebit: {
-                red: [-399, -2026, 503, -197, 1589],
-                blue: [-1378, -137, -206, 2213, 108],
-                yellow: [-2393, -1864, -1645, -1314, -3552],
-                green: [-4300, -4391, -2722, -3573, 70],
-                purple: [-1429, 640, 2166, 2575, 2769]
-            },
-            roce: {
-                red: [-1.6, -6.6, 1.5, -0.6, 5.9],
-                blue: [-5.8, -0.5, -0.6, 6.5, 0.3],
-                yellow: [-11.9, -9.2, -7.9, -6.3, -16.1],
-                green: [-18.1, -17.9, -10.8, -14.7, 0.3],
-                purple: [-6.6, 3, 8, 8.6, 9.1]
-            },
-            sharePrice: {
-                red: [11, 10, 10, 10, 19],
-                blue: [10, 10, 10, 20, 10],
-                yellow: [10, 9, 9, 8, 7],
-                green: [10, 8, 7, 5, 5],
-                purple: [10, 21, 41, 83, 135]
-            },
-            cash: {
-                red: [19701, 18999, 19000, 20831, 25922],
-                blue: [23037, 19316, 19316, 19000, 18999],
-                yellow: [25392, 25544, 22522, 20459, 24088],
-                green: [18999, 19000, 19000, 19000, 20723],
-                purple: [22739, 21790, 20996, 24054, 24054]
-            },
-            morale: {
-                red: [70, 61, 63, 67, 59],
-                blue: [71, 62, 73, 68, 60],
-                yellow: [71, 65, 60, 55, 40],
-                green: [67, 71, 72, 81, 83],
-                purple: [68, 74, 69, 66, 69]
-            },
-            are: {
-                red: [-12378, -14598, -14753, -15695, -14850],
-                blue: [-13417, -13825, -14650, -13131, -13718],
-                yellow: [-14432, -16848, -19033, -20879, -24923],
-                green: [-16299, -21212, -24954, -30243, -32317],
-                purple: [-13436, -13020, -11101, -8812, -6332]
-            },
-            // P9 Region 1 Segment Data
-            p9r1Segments: {
-                lowCost: {
-                    ebit: [502, 736, 44, 805, 594],
-                    revenue: [2905, 4488, 561, 3696, 4026],
-                    marketShare: [17, 32, 3, 23, 25],
-                    price: [35, 33, 33, 33, 33]
+        // Complete simulation data for both universes
+        const simulationData = {
+            "1": { // Universe 1
+                "P5": {
+                    "Red": { revenue: 14410, ebit: -399, roce: -1.6, sharePrice: 11, cash: 19701, morale: 70, marketShare: 17.8, lowCost: 2800, family: 4200, eco: 3100, image: 4310 },
+                    "Blue": { revenue: 15857, ebit: -1378, roce: -5.8, sharePrice: 10, cash: 23037, morale: 71, marketShare: 19.5, lowCost: 3200, family: 4500, eco: 3600, image: 4557 },
+                    "Yellow": { revenue: 17170, ebit: -2393, roce: -11.9, sharePrice: 10, cash: 25392, morale: 71, marketShare: 21.1, lowCost: 3500, family: 5000, eco: 4000, image: 4670 },
+                    "Green": { revenue: 15237, ebit: -4300, roce: -18.1, sharePrice: 10, cash: 18999, morale: 67, marketShare: 18.8, lowCost: 3100, family: 4300, eco: 3500, image: 4337 },
+                    "Purple": { revenue: 18266, ebit: -1429, roce: -6.6, sharePrice: 10, cash: 22739, morale: 68, marketShare: 22.5, lowCost: 3800, family: 5200, eco: 4200, image: 5066 }
                 },
-                family: {
-                    ebit: [-424, -413, -1361, -1042, -128],
-                    revenue: [4284, 1020, 3360, 2964, 3920],
-                    marketShare: [17, 4, 22, 42, 15],
-                    price: [68, 68, 40, 39, 70]
+                "P6": {
+                    "Red": { revenue: 11525, ebit: -2026, roce: -6.6, sharePrice: 10, cash: 18999, morale: 61, marketShare: 15.2, lowCost: 2200, family: 3200, eco: 2600, image: 3525 },
+                    "Blue": { revenue: 17072, ebit: -137, roce: -0.5, sharePrice: 10, cash: 19316, morale: 62, marketShare: 22.5, lowCost: 3600, family: 5000, eco: 3900, image: 4572 },
+                    "Yellow": { revenue: 16085, ebit: -1864, roce: -9.2, sharePrice: 9, cash: 25544, morale: 65, marketShare: 21.2, lowCost: 3300, family: 4700, eco: 3700, image: 4385 },
+                    "Green": { revenue: 12108, ebit: -4391, roce: -17.9, sharePrice: 8, cash: 19000, morale: 71, marketShare: 16.0, lowCost: 2400, family: 3400, eco: 2800, image: 3508 },
+                    "Purple": { revenue: 22331, ebit: 640, roce: 3.0, sharePrice: 21, cash: 21790, morale: 74, marketShare: 29.5, lowCost: 4800, family: 6500, eco: 5000, image: 6031 }
                 },
-                eco: {
-                    ebit: [-949, 248, -1805, -10, 690],
-                    revenue: [2898, 4514, 0, 4446, 6560],
-                    marketShare: [27, 18, 0, 30, 24],
-                    price: [69, 74, 57, 78, 80]
+                "P7": {
+                    "Red": { revenue: 19032, ebit: 503, roce: 1.5, sharePrice: 10, cash: 19000, morale: 63, marketShare: 22.1, lowCost: 3900, family: 5600, eco: 4200, image: 5332 },
+                    "Blue": { revenue: 17072, ebit: -206, roce: -0.6, sharePrice: 10, cash: 19316, morale: 73, marketShare: 19.8, lowCost: 3500, family: 4900, eco: 3800, image: 4872 },
+                    "Yellow": { revenue: 15309, ebit: -1645, roce: -7.9, sharePrice: 9, cash: 22522, morale: 60, marketShare: 17.8, lowCost: 3100, family: 4400, eco: 3500, image: 4309 },
+                    "Green": { revenue: 16383, ebit: -2722, roce: -10.8, sharePrice: 7, cash: 19000, morale: 72, marketShare: 19.0, lowCost: 3300, family: 4700, eco: 3700, image: 4683 },
+                    "Purple": { revenue: 20862, ebit: 2166, roce: 8.0, sharePrice: 41, cash: 20996, morale: 69, marketShare: 24.2, lowCost: 4400, family: 6000, eco: 4700, image: 5762 }
                 },
-                image: {
-                    ebit: [2459, -463, -431, 318, 1613],
-                    revenue: [9238, 5720, 5200, 7130, 9900],
-                    marketShare: [22, 9, 14, 33, 22],
-                    price: [149, 220, 130, 155, 165]
+                "P8": {
+                    "Red": { revenue: 19251, ebit: -197, roce: -0.6, sharePrice: 10, cash: 20831, morale: 67, marketShare: 21.5, lowCost: 3950, family: 5650, eco: 4250, image: 5401 },
+                    "Blue": { revenue: 20560, ebit: 2213, roce: 6.5, sharePrice: 20, cash: 19000, morale: 68, marketShare: 23.0, lowCost: 4300, family: 6000, eco: 4600, image: 5660 },
+                    "Yellow": { revenue: 15938, ebit: -1314, roce: -6.3, sharePrice: 8, cash: 20459, morale: 55, marketShare: 17.8, lowCost: 3200, family: 4600, eco: 3600, image: 4538 },
+                    "Green": { revenue: 14397, ebit: -3573, roce: -14.7, sharePrice: 5, cash: 19000, morale: 81, marketShare: 16.1, lowCost: 2900, family: 4100, eco: 3200, image: 4197 },
+                    "Purple": { revenue: 23351, ebit: 2575, roce: 8.6, sharePrice: 83, cash: 24054, morale: 66, marketShare: 26.1, lowCost: 4900, family: 6800, eco: 5200, image: 6451 }
+                },
+                "P9": {
+                    "Red": { revenue: 19325, ebit: 1589, roce: 5.9, sharePrice: 19, cash: 25922, morale: 59, marketShare: 22.2, lowCost: 2905, family: 4284, eco: 2898, image: 9238 },
+                    "Blue": { revenue: 15742, ebit: 108, roce: 0.3, sharePrice: 10, cash: 18999, morale: 60, marketShare: 18.1, lowCost: 4488, family: 1020, eco: 4514, image: 5720 },
+                    "Yellow": { revenue: 9121, ebit: -3552, roce: -16.1, sharePrice: 7, cash: 24088, morale: 40, marketShare: 10.5, lowCost: 561, family: 3360, eco: 0, image: 5200 },
+                    "Green": { revenue: 18236, ebit: 70, roce: 0.3, sharePrice: 5, cash: 20723, morale: 83, marketShare: 21.0, lowCost: 3696, family: 2964, eco: 4446, image: 7130 },
+                    "Purple": { revenue: 24406, ebit: 2769, roce: 9.1, sharePrice: 135, cash: 24054, morale: 69, marketShare: 28.1, lowCost: 4026, family: 3920, eco: 6560, image: 9900 }
+                }
+            },
+            "2": { // Universe 2
+                "P5": {
+                    "Red": { revenue: 14850, ebit: -520, roce: -2.1, sharePrice: 10, cash: 19200, morale: 68, marketShare: 18.2, lowCost: 2900, family: 4300, eco: 3200, image: 4450 },
+                    "Blue": { revenue: 16200, ebit: -980, roce: -4.2, sharePrice: 11, cash: 22500, morale: 72, marketShare: 19.8, lowCost: 3300, family: 4650, eco: 3700, image: 4550 },
+                    "Yellow": { revenue: 15800, ebit: -1850, roce: -8.5, sharePrice: 9, cash: 24800, morale: 69, marketShare: 19.3, lowCost: 3200, family: 4500, eco: 3600, image: 4500 },
+                    "Green": { revenue: 17500, ebit: -2100, roce: -9.8, sharePrice: 9, cash: 20100, morale: 65, marketShare: 21.4, lowCost: 3600, family: 5000, eco: 4000, image: 4900 },
+                    "Purple": { revenue: 17350, ebit: -1200, roce: -5.5, sharePrice: 11, cash: 21800, morale: 70, marketShare: 21.2, lowCost: 3550, family: 4950, eco: 3950, image: 4900 }
+                },
+                "P6": {
+                    "Red": { revenue: 13200, ebit: -1650, roce: -5.8, sharePrice: 9, cash: 18500, morale: 63, marketShare: 16.8, lowCost: 2500, family: 3700, eco: 3000, image: 4000 },
+                    "Blue": { revenue: 18100, ebit: 320, roce: 1.2, sharePrice: 12, cash: 20800, morale: 70, marketShare: 23.1, lowCost: 3800, family: 5200, eco: 4100, image: 5000 },
+                    "Yellow": { revenue: 14500, ebit: -2200, roce: -10.5, sharePrice: 8, cash: 23200, morale: 62, marketShare: 18.5, lowCost: 2900, family: 4100, eco: 3300, image: 4200 },
+                    "Green": { revenue: 15800, ebit: -2800, roce: -12.8, sharePrice: 7, cash: 18800, morale: 68, marketShare: 20.1, lowCost: 3200, family: 4500, eco: 3600, image: 4500 },
+                    "Purple": { revenue: 20500, ebit: 1100, roce: 4.5, sharePrice: 25, cash: 22500, morale: 73, marketShare: 26.1, lowCost: 4300, family: 5900, eco: 4600, image: 5700 }
+                },
+                "P7": {
+                    "Red": { revenue: 17500, ebit: 280, roce: 0.9, sharePrice: 11, cash: 19500, morale: 65, marketShare: 20.8, lowCost: 3500, family: 5000, eco: 3900, image: 5100 },
+                    "Blue": { revenue: 18500, ebit: 650, roce: 2.3, sharePrice: 14, cash: 21200, morale: 71, marketShare: 22.0, lowCost: 3800, family: 5300, eco: 4200, image: 5200 },
+                    "Yellow": { revenue: 13200, ebit: -1950, roce: -9.2, sharePrice: 7, cash: 21500, morale: 58, marketShare: 15.7, lowCost: 2600, family: 3700, eco: 3000, image: 3900 },
+                    "Green": { revenue: 17200, ebit: -1800, roce: -7.5, sharePrice: 6, cash: 18200, morale: 74, marketShare: 20.4, lowCost: 3450, family: 4900, eco: 3850, image: 5000 },
+                    "Purple": { revenue: 22800, ebit: 2200, roce: 8.2, sharePrice: 48, cash: 23800, morale: 71, marketShare: 27.1, lowCost: 4800, family: 6600, eco: 5100, image: 6300 }
+                },
+                "P8": {
+                    "Red": { revenue: 18800, ebit: 420, roce: 1.4, sharePrice: 12, cash: 21000, morale: 66, marketShare: 21.2, lowCost: 3750, family: 5400, eco: 4150, image: 5500 },
+                    "Blue": { revenue: 19500, ebit: 1800, roce: 5.8, sharePrice: 22, cash: 22000, morale: 69, marketShare: 22.0, lowCost: 4000, family: 5600, eco: 4400, image: 5500 },
+                    "Yellow": { revenue: 12800, ebit: -2500, roce: -11.8, sharePrice: 6, cash: 20200, morale: 52, marketShare: 14.4, lowCost: 2500, family: 3600, eco: 2900, image: 3800 },
+                    "Green": { revenue: 16500, ebit: -2200, roce: -9.5, sharePrice: 5, cash: 17800, morale: 78, marketShare: 18.6, lowCost: 3300, family: 4700, eco: 3700, image: 4800 },
+                    "Purple": { revenue: 24200, ebit: 2850, roce: 9.5, sharePrice: 95, cash: 25500, morale: 68, marketShare: 27.3, lowCost: 5100, family: 7000, eco: 5400, image: 6700 }
+                },
+                "P9": {
+                    "Red": { revenue: 20100, ebit: 1850, roce: 6.5, sharePrice: 22, cash: 26500, morale: 62, marketShare: 22.5, lowCost: 3100, family: 4500, eco: 3200, image: 9300 },
+                    "Blue": { revenue: 17200, ebit: 580, roce: 1.8, sharePrice: 15, cash: 20500, morale: 63, marketShare: 19.3, lowCost: 4700, family: 1200, eco: 4800, image: 6500 },
+                    "Yellow": { revenue: 10500, ebit: -3200, roce: -14.8, sharePrice: 5, cash: 22500, morale: 42, marketShare: 11.8, lowCost: 800, family: 3800, eco: 200, image: 5700 },
+                    "Green": { revenue: 19200, ebit: 350, roce: 1.2, sharePrice: 6, cash: 19500, morale: 82, marketShare: 21.5, lowCost: 3900, family: 3200, eco: 4700, image: 7400 },
+                    "Purple": { revenue: 26500, ebit: 3200, roce: 10.5, sharePrice: 155, cash: 27000, morale: 70, marketShare: 29.7, lowCost: 4500, family: 4300, eco: 7200, image: 10500 }
                 }
             }
         };
 
-        // Tab navigation
-        function showTab(tabId) {
+        const teamColors = {
+            "Red": "#e74c3c",
+            "Blue": "#3498db",
+            "Yellow": "#f1c40f",
+            "Green": "#27ae60",
+            "Purple": "#9b59b6"
+        };
+
+        const teams = ["Red", "Blue", "Yellow", "Green", "Purple"];
+        const periods = ["P5", "P6", "P7", "P8", "P9"];
+
+        let charts = {};
+
+        // Tab switching
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
+
+            setTimeout(() => {
+                Object.values(charts).forEach(chart => {
+                    if (chart) chart.resize();
+                });
+            }, 100);
         }
 
-        // Chart defaults
-        Chart.defaults.color = '#fff';
-        Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+        // Get current selection
+        function getSelection() {
+            return {
+                universe: document.getElementById('universeSelect').value,
+                period: document.getElementById('periodSelect').value,
+                team: document.getElementById('teamSelect').value
+            };
+        }
 
-        // Revenue Trend Chart
-        new Chart(document.getElementById('revenueTrendChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.revenue.red, borderColor: colors.red, backgroundColor: colors.red + '33', fill: true, tension: 0.4 },
-                    { label: 'Blue', data: data.revenue.blue, borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.4 },
-                    { label: 'Yellow', data: data.revenue.yellow, borderColor: colors.yellow, backgroundColor: 'transparent', tension: 0.4 },
-                    { label: 'Green', data: data.revenue.green, borderColor: colors.green, backgroundColor: 'transparent', tension: 0.4 },
-                    { label: 'Purple', data: data.revenue.purple, borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } },
-                scales: { y: { beginAtZero: false } }
+        // Format currency
+        function formatCurrency(value) {
+            return '$' + value.toLocaleString();
+        }
+
+        // Update Overview KPIs
+        function updateOverviewKPIs() {
+            const { universe, period } = getSelection();
+            const data = simulationData[universe][period];
+            const container = document.getElementById('overviewKPIs');
+
+            let html = '';
+            teams.forEach(team => {
+                const d = data[team];
+                html += `
+                    <div class="kpi-card ${team.toLowerCase()}">
+                        <div class="kpi-team" style="color: ${teamColors[team]}">Team ${team}</div>
+                        <div class="kpi-label">Revenue</div>
+                        <div class="kpi-value">${formatCurrency(d.revenue)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Update Leaderboard
+        function updateLeaderboard() {
+            const { universe, period } = getSelection();
+            const data = simulationData[universe][period];
+            const container = document.getElementById('leaderboardContainer');
+
+            const metrics = [
+                { key: 'revenue', label: 'Revenue', format: v => formatCurrency(v), icon: '&#128176;' },
+                { key: 'ebit', label: 'EBIT', format: v => formatCurrency(v), icon: '&#128200;' },
+                { key: 'roce', label: 'ROCE', format: v => v.toFixed(1) + '%', icon: '&#127919;' },
+                { key: 'sharePrice', label: 'Share Price', format: v => '$' + v, icon: '&#128202;' },
+                { key: 'marketShare', label: 'Market Share', format: v => v.toFixed(1) + '%', icon: '&#127942;' },
+                { key: 'morale', label: 'Morale', format: v => v + '%', icon: '&#128522;' }
+            ];
+
+            let html = '';
+            metrics.forEach(metric => {
+                const sorted = teams.map(t => ({ team: t, value: data[t][metric.key] }))
+                    .sort((a, b) => b.value - a.value);
+
+                html += `
+                    <div class="leaderboard-card">
+                        <h3>${metric.icon} ${metric.label} Rankings</h3>
+                `;
+
+                sorted.forEach((item, index) => {
+                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'normal';
+                    html += `
+                        <div class="leaderboard-item">
+                            <div class="rank ${rankClass}">${index + 1}</div>
+                            <div class="team-indicator" style="background: ${teamColors[item.team]}"></div>
+                            <div class="team-name">Team ${item.team}</div>
+                            <div class="team-value">${metric.format(item.value)}</div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Update Financial Table
+        function updateFinancialTable() {
+            const { universe, period } = getSelection();
+            const data = simulationData[universe][period];
+            const table = document.getElementById('financialTable');
+
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        ${teams.map(t => `<th style="color: ${teamColors[t]}">${t}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Revenue</td>
+                        ${teams.map(t => `<td>${formatCurrency(data[t].revenue)}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td>EBIT</td>
+                        ${teams.map(t => `<td>${formatCurrency(data[t].ebit)}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td>ROCE</td>
+                        ${teams.map(t => `<td>${data[t].roce.toFixed(1)}%</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td>Share Price</td>
+                        ${teams.map(t => `<td>$${data[t].sharePrice}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td>Cash</td>
+                        ${teams.map(t => `<td>${formatCurrency(data[t].cash)}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td>Morale</td>
+                        ${teams.map(t => `<td>${data[t].morale}%</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td>Market Share</td>
+                        ${teams.map(t => `<td>${data[t].marketShare.toFixed(1)}%</td>`).join('')}
+                    </tr>
+                </tbody>
+            `;
+        }
+
+        // Create/Update Charts
+        function createBarChart(canvasId, labels, datasets, title = '') {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
             }
-        });
 
-        // EBIT Trend Chart
-        new Chart(document.getElementById('ebitTrendChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.ebit.red, borderColor: colors.red, backgroundColor: colors.red + '33', fill: true, tension: 0.4 },
-                    { label: 'Blue', data: data.ebit.blue, borderColor: colors.blue, backgroundColor: 'transparent', tension: 0.4 },
-                    { label: 'Yellow', data: data.ebit.yellow, borderColor: colors.yellow, backgroundColor: 'transparent', tension: 0.4 },
-                    { label: 'Green', data: data.ebit.green, borderColor: colors.green, backgroundColor: 'transparent', tension: 0.4 },
-                    { label: 'Purple', data: data.ebit.purple, borderColor: colors.purple, backgroundColor: 'transparent', tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Ranking Chart
-        new Chart(document.getElementById('rankingChart'), {
-            type: 'bar',
-            data: {
-                labels: teamNames,
-                datasets: [{
-                    label: 'Total EBIT',
-                    data: [1589, 108, -3552, 70, 2769],
-                    backgroundColor: teamColors,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
-            }
-        });
-
-        // Revenue Comparison Chart
-        new Chart(document.getElementById('revenueComparisonChart'), {
-            type: 'bar',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.revenue.red, backgroundColor: colors.red },
-                    { label: 'Blue', data: data.revenue.blue, backgroundColor: colors.blue },
-                    { label: 'Yellow', data: data.revenue.yellow, backgroundColor: colors.yellow },
-                    { label: 'Green', data: data.revenue.green, backgroundColor: colors.green },
-                    { label: 'Purple', data: data.revenue.purple, backgroundColor: colors.purple }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // ROCE Chart
-        new Chart(document.getElementById('roceChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.roce.red, borderColor: colors.red, backgroundColor: colors.red + '33', fill: true, tension: 0.4 },
-                    { label: 'Blue', data: data.roce.blue, borderColor: colors.blue, tension: 0.4 },
-                    { label: 'Yellow', data: data.roce.yellow, borderColor: colors.yellow, tension: 0.4 },
-                    { label: 'Green', data: data.roce.green, borderColor: colors.green, tension: 0.4 },
-                    { label: 'Purple', data: data.roce.purple, borderColor: colors.purple, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Share Price Chart
-        new Chart(document.getElementById('sharePriceChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.sharePrice.red, borderColor: colors.red, tension: 0.4 },
-                    { label: 'Blue', data: data.sharePrice.blue, borderColor: colors.blue, tension: 0.4 },
-                    { label: 'Yellow', data: data.sharePrice.yellow, borderColor: colors.yellow, tension: 0.4 },
-                    { label: 'Green', data: data.sharePrice.green, borderColor: colors.green, tension: 0.4 },
-                    { label: 'Purple', data: data.sharePrice.purple, borderColor: colors.purple, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Cash Chart
-        new Chart(document.getElementById('cashChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.cash.red, borderColor: colors.red, backgroundColor: colors.red + '33', fill: true, tension: 0.4 },
-                    { label: 'Blue', data: data.cash.blue, borderColor: colors.blue, tension: 0.4 },
-                    { label: 'Yellow', data: data.cash.yellow, borderColor: colors.yellow, tension: 0.4 },
-                    { label: 'Green', data: data.cash.green, borderColor: colors.green, tension: 0.4 },
-                    { label: 'Purple', data: data.cash.purple, borderColor: colors.purple, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // ARE Chart
-        new Chart(document.getElementById('areChart'), {
-            type: 'bar',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.are.red, backgroundColor: colors.red },
-                    { label: 'Blue', data: data.are.blue, backgroundColor: colors.blue },
-                    { label: 'Yellow', data: data.are.yellow, backgroundColor: colors.yellow },
-                    { label: 'Green', data: data.are.green, backgroundColor: colors.green },
-                    { label: 'Purple', data: data.are.purple, backgroundColor: colors.purple }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Segment EBIT Chart (Red Team)
-        new Chart(document.getElementById('segmentEbitChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Low Cost', 'Family', 'Eco', 'Image'],
-                datasets: [{
-                    label: 'EBIT',
-                    data: [502, -424, -949, 2459],
-                    backgroundColor: [colors.green, colors.red, colors.red, colors.green],
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // Market Share Chart
-        new Chart(document.getElementById('marketShareChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Low Cost 17%', 'Family 17%', 'Eco 27%', 'Image 22%'],
-                datasets: [{
-                    data: [17, 17, 27, 22],
-                    backgroundColor: ['#60a5fa', '#f97316', '#22c55e', '#a855f7'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'right' } }
-            }
-        });
-
-        // Segment Revenue Chart
-        new Chart(document.getElementById('segmentRevenueChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Low Cost', 'Family', 'Eco', 'Image'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [2905, 4284, 2898, 9238],
-                    backgroundColor: ['#60a5fa', '#f97316', '#22c55e', '#a855f7'],
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // Price Chart
-        new Chart(document.getElementById('priceChart'), {
-            type: 'radar',
-            data: {
-                labels: ['Low Cost', 'Family', 'Eco', 'Image'],
-                datasets: [
-                    { label: 'Red', data: [35, 68, 69, 149], borderColor: colors.red, backgroundColor: colors.red + '33' },
-                    { label: 'Blue', data: [33, 68, 74, 220], borderColor: colors.blue, backgroundColor: 'transparent' },
-                    { label: 'Purple', data: [33, 70, 80, 165], borderColor: colors.purple, backgroundColor: 'transparent' }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Competitive EBIT Chart
-        new Chart(document.getElementById('competitiveEbitChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Low Cost', 'Family', 'Eco', 'Image'],
-                datasets: [
-                    { label: 'Red', data: [502, -424, -949, 2459], backgroundColor: colors.red },
-                    { label: 'Blue', data: [736, -413, 248, -463], backgroundColor: colors.blue },
-                    { label: 'Yellow', data: [44, -1361, -1805, -431], backgroundColor: colors.yellow },
-                    { label: 'Green', data: [805, -1042, -10, 318], backgroundColor: colors.green },
-                    { label: 'Purple', data: [594, -128, 690, 1613], backgroundColor: colors.purple }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Engineering Appeal Chart
-        new Chart(document.getElementById('engineeringChart'), {
-            type: 'bar',
-            data: {
-                labels: teamNames,
-                datasets: [
-                    { label: 'Low Cost', data: [48, 81, 53, 87, 70], backgroundColor: '#60a5fa' },
-                    { label: 'Family', data: [79, 47, 59, 45, 102], backgroundColor: '#f97316' },
-                    { label: 'Eco', data: [170, 76, 55, 126, 150], backgroundColor: '#22c55e' },
-                    { label: 'Image', data: [89, 198, 52, 148, 145], backgroundColor: '#a855f7' }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Marketing Appeal Chart
-        new Chart(document.getElementById('marketingChart'), {
-            type: 'bar',
-            data: {
-                labels: teamNames,
-                datasets: [
-                    { label: 'Low Cost', data: [124, 125, 37, 101, 106], backgroundColor: '#60a5fa' },
-                    { label: 'Family', data: [153, 63, 52, 98, 119], backgroundColor: '#f97316' },
-                    { label: 'Eco', data: [91, 122, 44, 94, 156], backgroundColor: '#22c55e' },
-                    { label: 'Image', data: [127, 138, 117, 125, 121], backgroundColor: '#a855f7' }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Timeline Chart
-        new Chart(document.getElementById('timelineChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Revenue (k)', data: data.revenue.red.map(v => v/1000), borderColor: '#60a5fa', yAxisID: 'y', tension: 0.4 },
-                    { label: 'EBIT', data: data.ebit.red, borderColor: colors.red, yAxisID: 'y1', tension: 0.4 },
-                    { label: 'Share Price', data: data.sharePrice.red, borderColor: '#22c55e', yAxisID: 'y1', tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } },
-                scales: {
-                    y: { type: 'linear', position: 'left', title: { display: true, text: 'Revenue (k)' } },
-                    y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'EBIT / Share Price' } }
+            charts[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: datasets.length > 1, labels: { color: '#ccc' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        // Morale Chart
-        new Chart(document.getElementById('moraleChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: data.morale.red, borderColor: colors.red, backgroundColor: colors.red + '33', fill: true, tension: 0.4 },
-                    { label: 'Blue', data: data.morale.blue, borderColor: colors.blue, tension: 0.4 },
-                    { label: 'Yellow', data: data.morale.yellow, borderColor: colors.yellow, tension: 0.4 },
-                    { label: 'Green', data: data.morale.green, borderColor: colors.green, tension: 0.4 },
-                    { label: 'Purple', data: data.morale.purple, borderColor: colors.purple, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } },
-                scales: { y: { min: 30, max: 100 } }
-            }
-        });
+        function createLineChart(canvasId, labels, datasets) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
 
-        // Quality Chart
-        new Chart(document.getElementById('qualityChart'), {
-            type: 'bar',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: [50, 50, 50, 50, 50], backgroundColor: colors.red },
-                    { label: 'Blue', data: [50, 49, 52, 54, 51], backgroundColor: colors.blue },
-                    { label: 'Yellow', data: [50, 49, 50, 50, 50], backgroundColor: colors.yellow },
-                    { label: 'Green', data: [50, 49, 52, 54, 56], backgroundColor: colors.green },
-                    { label: 'Purple', data: [50, 50, 50, 50, 50], backgroundColor: colors.purple }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } },
-                scales: { y: { min: 40, max: 60 } }
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
             }
-        });
 
-        // CO2 Chart
-        new Chart(document.getElementById('co2Chart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: [119, 112, 125, 126, 139], borderColor: colors.red, tension: 0.4 },
-                    { label: 'Blue', data: [140, 95, 105, 108, 86], borderColor: colors.blue, tension: 0.4 },
-                    { label: 'Yellow', data: [114, 142, 138, 145, 159], borderColor: colors.yellow, tension: 0.4 },
-                    { label: 'Green', data: [149, 144, 152, 163, 158], borderColor: colors.green, tension: 0.4 },
-                    { label: 'Purple', data: [108, 114, 124, 115, 109], borderColor: colors.purple, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
+            charts[canvasId] = new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ccc' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+        }
 
-        // Leverage Chart
-        new Chart(document.getElementById('leverageChart'), {
-            type: 'line',
-            data: {
-                labels: data.periods,
-                datasets: [
-                    { label: 'Red', data: [25, 49, 56, 58, 56], borderColor: colors.red, backgroundColor: colors.red + '33', fill: true, tension: 0.4 },
-                    { label: 'Blue', data: [35, 40, 52, 50, 53], borderColor: colors.blue, tension: 0.4 },
-                    { label: 'Yellow', data: [36, 44, 47, 49, 53], borderColor: colors.yellow, tension: 0.4 },
-                    { label: 'Green', data: [35, 63, 93, 151, 171], borderColor: colors.green, tension: 0.4 },
-                    { label: 'Purple', data: [30, 32, 33, 37, 35], borderColor: colors.purple, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
+        function createPieChart(canvasId, labels, data, colors) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
             }
+
+            charts[canvasId] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#1a1a2e'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#ccc' } }
+                    }
+                }
+            });
+        }
+
+        // Update all charts
+        function updateCharts() {
+            const { universe, period } = getSelection();
+            const data = simulationData[universe][period];
+
+            // Revenue Chart
+            createBarChart('revenueChart', teams, [{
+                label: 'Revenue',
+                data: teams.map(t => data[t].revenue),
+                backgroundColor: teams.map(t => teamColors[t])
+            }]);
+
+            // EBIT Chart
+            createBarChart('ebitChart', teams, [{
+                label: 'EBIT',
+                data: teams.map(t => data[t].ebit),
+                backgroundColor: teams.map(t => teamColors[t])
+            }]);
+
+            // Share Price Chart
+            createBarChart('sharePriceChart', teams, [{
+                label: 'Share Price ($)',
+                data: teams.map(t => data[t].sharePrice),
+                backgroundColor: teams.map(t => teamColors[t])
+            }]);
+
+            // Market Share Pie Chart
+            createPieChart('marketShareChart',
+                teams.map(t => `Team ${t}`),
+                teams.map(t => data[t].marketShare),
+                teams.map(t => teamColors[t])
+            );
+
+            // ROCE Chart
+            createBarChart('roceChart', teams, [{
+                label: 'ROCE (%)',
+                data: teams.map(t => data[t].roce),
+                backgroundColor: teams.map(t => teamColors[t])
+            }]);
+
+            // Cash Chart
+            createBarChart('cashChart', teams, [{
+                label: 'Cash',
+                data: teams.map(t => data[t].cash),
+                backgroundColor: teams.map(t => teamColors[t])
+            }]);
+
+            // Segment Charts
+            ['lowCost', 'family', 'eco', 'image'].forEach((seg, i) => {
+                const chartIds = ['lowCostChart', 'familyChart', 'ecoChart', 'imageChart'];
+                createBarChart(chartIds[i], teams, [{
+                    label: 'Revenue',
+                    data: teams.map(t => data[t][seg]),
+                    backgroundColor: teams.map(t => teamColors[t])
+                }]);
+            });
+
+            // Trend Charts
+            updateTrendCharts();
+        }
+
+        function updateTrendCharts() {
+            const { universe } = getSelection();
+            const uData = simulationData[universe];
+
+            // Revenue Trend
+            createLineChart('revenueTrendChart', periods, teams.map(team => ({
+                label: `Team ${team}`,
+                data: periods.map(p => uData[p][team].revenue),
+                borderColor: teamColors[team],
+                backgroundColor: teamColors[team] + '40',
+                tension: 0.3,
+                fill: false
+            })));
+
+            // EBIT Trend
+            createLineChart('ebitTrendChart', periods, teams.map(team => ({
+                label: `Team ${team}`,
+                data: periods.map(p => uData[p][team].ebit),
+                borderColor: teamColors[team],
+                backgroundColor: teamColors[team] + '40',
+                tension: 0.3,
+                fill: false
+            })));
+
+            // Share Price Trend
+            createLineChart('shareTrendChart', periods, teams.map(team => ({
+                label: `Team ${team}`,
+                data: periods.map(p => uData[p][team].sharePrice),
+                borderColor: teamColors[team],
+                backgroundColor: teamColors[team] + '40',
+                tension: 0.3,
+                fill: false
+            })));
+
+            // ROCE Trend
+            createLineChart('roceTrendChart', periods, teams.map(team => ({
+                label: `Team ${team}`,
+                data: periods.map(p => uData[p][team].roce),
+                borderColor: teamColors[team],
+                backgroundColor: teamColors[team] + '40',
+                tension: 0.3,
+                fill: false
+            })));
+        }
+
+        // Head to Head functionality
+        function updateH2H() {
+            const { universe, period } = getSelection();
+            const data = simulationData[universe][period];
+            const team1 = document.getElementById('h2hTeam1').value;
+            const team2 = document.getElementById('h2hTeam2').value;
+
+            const d1 = data[team1];
+            const d2 = data[team2];
+
+            const metrics = [
+                { key: 'revenue', label: 'Revenue', format: v => formatCurrency(v) },
+                { key: 'ebit', label: 'EBIT', format: v => formatCurrency(v) },
+                { key: 'roce', label: 'ROCE', format: v => v.toFixed(1) + '%' },
+                { key: 'sharePrice', label: 'Share Price', format: v => '$' + v },
+                { key: 'marketShare', label: 'Market Share', format: v => v.toFixed(1) + '%' },
+                { key: 'cash', label: 'Cash', format: v => formatCurrency(v) },
+                { key: 'morale', label: 'Morale', format: v => v + '%' }
+            ];
+
+            let html = `
+                <div class="h2h-metrics" style="border-right: 2px solid ${teamColors[team1]}">
+                    <h3 style="color: ${teamColors[team1]}; text-align: center; margin-bottom: 15px;">Team ${team1}</h3>
+            `;
+
+            metrics.forEach(m => {
+                const v1 = d1[m.key];
+                const v2 = d2[m.key];
+                const isWinner = v1 > v2;
+                html += `
+                    <div class="h2h-metric">
+                        <span class="h2h-metric-name">${m.label}</span>
+                        <span class="h2h-metric-value ${isWinner ? 'winner' : v1 < v2 ? 'loser' : ''}">${m.format(v1)}</span>
+                    </div>
+                `;
+            });
+
+            html += `</div><div class="h2h-metrics" style="border-left: 2px solid ${teamColors[team2]}">
+                <h3 style="color: ${teamColors[team2]}; text-align: center; margin-bottom: 15px;">Team ${team2}</h3>`;
+
+            metrics.forEach(m => {
+                const v1 = d1[m.key];
+                const v2 = d2[m.key];
+                const isWinner = v2 > v1;
+                html += `
+                    <div class="h2h-metric">
+                        <span class="h2h-metric-name">${m.label}</span>
+                        <span class="h2h-metric-value ${isWinner ? 'winner' : v2 < v1 ? 'loser' : ''}">${m.format(v2)}</span>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('h2hComparison').innerHTML = html;
+
+            // H2H Trend Chart
+            const uData = simulationData[universe];
+            createLineChart('h2hTrendChart', periods, [
+                {
+                    label: `Team ${team1}`,
+                    data: periods.map(p => uData[p][team1].revenue),
+                    borderColor: teamColors[team1],
+                    backgroundColor: teamColors[team1] + '40',
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: `Team ${team2}`,
+                    data: periods.map(p => uData[p][team2].revenue),
+                    borderColor: teamColors[team2],
+                    backgroundColor: teamColors[team2] + '40',
+                    tension: 0.3,
+                    fill: false
+                }
+            ]);
+
+            // H2H Segment Chart
+            createBarChart('h2hSegmentChart', ['Low Cost', 'Family', 'Eco', 'Image'], [
+                {
+                    label: `Team ${team1}`,
+                    data: [d1.lowCost, d1.family, d1.eco, d1.image],
+                    backgroundColor: teamColors[team1]
+                },
+                {
+                    label: `Team ${team2}`,
+                    data: [d2.lowCost, d2.family, d2.eco, d2.image],
+                    backgroundColor: teamColors[team2]
+                }
+            ]);
+        }
+
+        // PPT Color Preview
+        function updatePptColorPreview() {
+            const team = document.getElementById('pptTeam').value;
+            document.getElementById('teamColorPreview').style.background = teamColors[team];
+        }
+
+        // Generate PowerPoint
+        function generatePPT() {
+            const team = document.getElementById('pptTeam').value;
+            const universe = document.getElementById('pptUniverse').value;
+            const members = document.getElementById('pptMembers').value;
+            const decisions = document.getElementById('pptDecisions').value;
+            const worked = document.getElementById('pptWorked').value;
+            const didntWork = document.getElementById('pptDidntWork').value;
+            const concepts = document.getElementById('pptConcepts').value;
+            const influence = document.getElementById('pptInfluence').value;
+            const lessons = document.getElementById('pptLessons').value;
+            const application = document.getElementById('pptApplication').value;
+
+            const pptx = new PptxGenJS();
+            pptx.author = 'MBSC MiM 2026';
+            pptx.title = `Team ${team} - MEGA CVC Simulation Analysis`;
+            pptx.subject = 'Strategy in Management - Simulation Reflection';
+
+            const teamColor = teamColors[team].replace('#', '');
+            const mbscGold = 'c5a028';
+            const darkBg = '1a1a2e';
+
+            // Slide 1: Title
+            let slide = pptx.addSlide();
+            slide.background = { color: darkBg };
+            slide.addText(`Team ${team}`, { x: 0.5, y: 1.5, w: '90%', h: 1, fontSize: 48, color: teamColor, bold: true, align: 'center' });
+            slide.addText('MEGA CVC Simulation Analysis', { x: 0.5, y: 2.5, w: '90%', h: 0.5, fontSize: 28, color: 'FFFFFF', align: 'center' });
+            slide.addText(`Universe ${universe} | Periods 5-9`, { x: 0.5, y: 3.2, w: '90%', h: 0.4, fontSize: 20, color: mbscGold, align: 'center' });
+            slide.addText('Strategy in Management', { x: 0.5, y: 4.2, w: '90%', h: 0.3, fontSize: 18, color: 'AAAAAA', align: 'center' });
+            slide.addText('Mohammed bin Salman College of Business & Entrepreneurship', { x: 0.5, y: 4.6, w: '90%', h: 0.3, fontSize: 16, color: 'AAAAAA', align: 'center' });
+            if (members) {
+                slide.addText(`Team Members: ${members}`, { x: 0.5, y: 5.2, w: '90%', h: 0.3, fontSize: 14, color: 'CCCCCC', align: 'center' });
+            }
+
+            // Slide 2: Performance Summary
+            slide = pptx.addSlide();
+            slide.background = { color: darkBg };
+            slide.addText('Performance Summary', { x: 0.5, y: 0.3, w: '90%', h: 0.6, fontSize: 32, color: mbscGold, bold: true });
+
+            const teamData = simulationData[universe]['P9'][team];
+            const performanceData = [
+                [{ text: 'Metric', options: { bold: true, color: mbscGold }}, { text: 'Value', options: { bold: true, color: mbscGold }}, { text: 'Rank', options: { bold: true, color: mbscGold }}],
+                ['Revenue', `$${teamData.revenue.toLocaleString()}`, getRank(universe, 'P9', team, 'revenue')],
+                ['EBIT', `$${teamData.ebit.toLocaleString()}`, getRank(universe, 'P9', team, 'ebit')],
+                ['ROCE', `${teamData.roce}%`, getRank(universe, 'P9', team, 'roce')],
+                ['Share Price', `$${teamData.sharePrice}`, getRank(universe, 'P9', team, 'sharePrice')],
+                ['Market Share', `${teamData.marketShare}%`, getRank(universe, 'P9', team, 'marketShare')]
+            ];
+
+            slide.addTable(performanceData, {
+                x: 0.5, y: 1.1, w: 9,
+                fill: { color: '16213e' },
+                color: 'FFFFFF',
+                fontSize: 14,
+                border: { color: teamColor, pt: 1 },
+                colW: [3, 3, 3]
+            });
+
+            // Slide 3: Simulation Experience
+            slide = pptx.addSlide();
+            slide.background = { color: darkBg };
+            slide.addText('Simulation Experience', { x: 0.5, y: 0.3, w: '90%', h: 0.6, fontSize: 32, color: mbscGold, bold: true });
+
+            slide.addText('Key Decisions:', { x: 0.5, y: 1.0, w: '90%', h: 0.4, fontSize: 18, color: teamColor, bold: true });
+            slide.addText(decisions || 'Not specified', { x: 0.5, y: 1.4, w: '90%', h: 1.2, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            slide.addText('What Worked:', { x: 0.5, y: 2.7, w: '90%', h: 0.4, fontSize: 18, color: '27ae60', bold: true });
+            slide.addText(worked || 'Not specified', { x: 0.5, y: 3.1, w: '90%', h: 1.0, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            slide.addText('Challenges:', { x: 0.5, y: 4.2, w: '90%', h: 0.4, fontSize: 18, color: 'e74c3c', bold: true });
+            slide.addText(didntWork || 'Not specified', { x: 0.5, y: 4.6, w: '90%', h: 1.0, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            // Slide 4: Strategy Concepts
+            slide = pptx.addSlide();
+            slide.background = { color: darkBg };
+            slide.addText('Strategy Concepts Applied', { x: 0.5, y: 0.3, w: '90%', h: 0.6, fontSize: 32, color: mbscGold, bold: true });
+
+            slide.addText('Concepts Used:', { x: 0.5, y: 1.0, w: '90%', h: 0.4, fontSize: 18, color: teamColor, bold: true });
+            slide.addText(concepts || 'Not specified', { x: 0.5, y: 1.4, w: '90%', h: 1.5, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            slide.addText('How They Influenced Decisions:', { x: 0.5, y: 3.0, w: '90%', h: 0.4, fontSize: 18, color: teamColor, bold: true });
+            slide.addText(influence || 'Not specified', { x: 0.5, y: 3.4, w: '90%', h: 2.0, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            // Slide 5: Lessons Learned
+            slide = pptx.addSlide();
+            slide.background = { color: darkBg };
+            slide.addText('Lessons Learned', { x: 0.5, y: 0.3, w: '90%', h: 0.6, fontSize: 32, color: mbscGold, bold: true });
+
+            slide.addText('Key Takeaways:', { x: 0.5, y: 1.0, w: '90%', h: 0.4, fontSize: 18, color: teamColor, bold: true });
+            slide.addText(lessons || 'Not specified', { x: 0.5, y: 1.4, w: '90%', h: 1.8, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            slide.addText('Real-World Application:', { x: 0.5, y: 3.3, w: '90%', h: 0.4, fontSize: 18, color: teamColor, bold: true });
+            slide.addText(application || 'Not specified', { x: 0.5, y: 3.7, w: '90%', h: 1.8, fontSize: 12, color: 'CCCCCC', valign: 'top' });
+
+            // Slide 6: Thank You
+            slide = pptx.addSlide();
+            slide.background = { color: darkBg };
+            slide.addText('Thank You', { x: 0.5, y: 2.0, w: '90%', h: 1, fontSize: 48, color: mbscGold, bold: true, align: 'center' });
+            slide.addText(`Team ${team} - Universe ${universe}`, { x: 0.5, y: 3.0, w: '90%', h: 0.5, fontSize: 24, color: teamColor, align: 'center' });
+            slide.addText('Mohammed bin Salman College', { x: 0.5, y: 4.0, w: '90%', h: 0.4, fontSize: 18, color: 'AAAAAA', align: 'center' });
+            slide.addText('MiM 2026 - Riyadh', { x: 0.5, y: 4.5, w: '90%', h: 0.3, fontSize: 14, color: '888888', align: 'center' });
+
+            pptx.writeFile({ fileName: `Team_${team}_Universe${universe}_Simulation_Analysis.pptx` });
+        }
+
+        function getRank(universe, period, team, metric) {
+            const data = simulationData[universe][period];
+            const sorted = teams.map(t => ({ team: t, value: data[t][metric] }))
+                .sort((a, b) => b.value - a.value);
+            const rank = sorted.findIndex(item => item.team === team) + 1;
+            return `#${rank}`;
+        }
+
+        // Main update function
+        function updateDashboard() {
+            updateOverviewKPIs();
+            updateLeaderboard();
+            updateFinancialTable();
+            updateCharts();
+            updateH2H();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
         });
     </script>
-
-    <footer style="background: rgba(0,0,0,0.3); padding: 20px 40px; text-align: center; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);">
-        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-            <img src="mbsc-logo.png" alt="MBSC" style="height: 40px; background: white; padding: 5px; border-radius: 5px;">
-            <div>
-                <div style="font-weight: 600;">Mohammed bin Salman College of Business & Entrepreneurship</div>
-                <div style="opacity: 0.7; font-size: 13px; margin-top: 5px;">Master in Management (MiM) 2026 | Strategy in Management Course</div>
-                <div style="opacity: 0.5; font-size: 12px; margin-top: 5px;">Team Red - Universe 2 | MEGA Learning Simulation Dashboard</div>
-            </div>
-        </div>
-    </footer>
 </body>
 </html>
