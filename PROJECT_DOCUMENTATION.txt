@@ -1,0 +1,298 @@
+================================================================================
+                    MEGA CVC PERFORMANCE DASHBOARD
+                      PROJECT DOCUMENTATION
+================================================================================
+
+Last Updated: January 11, 2026
+Author: Team Red - MiM 2026
+Institution: Mohammed bin Salman College of Business & Entrepreneurship (MBSC)
+
+================================================================================
+                           PROJECT OVERVIEW
+================================================================================
+
+This project is an interactive web-based dashboard built to visualize and
+analyze performance data from the MEGA CVC (Customer Value Challenge) business
+simulation used in the Strategy in Management course.
+
+The dashboard allows students, instructors, and stakeholders to:
+- Compare team performance across multiple metrics
+- Track trends over simulation periods
+- Perform head-to-head team comparisons
+- Generate PowerPoint presentations for reflection reports
+
+Live URL: https://mbsc-cvc.vercel.app
+GitHub Repository: https://github.com/YNaljehani/team-red-dashboard-
+
+================================================================================
+                              FEATURES
+================================================================================
+
+1. OVERVIEW TAB
+   - KPI cards showing revenue for all 5 teams
+   - Revenue comparison bar chart
+   - EBIT comparison bar chart
+   - Share price performance chart
+   - Market share distribution (doughnut chart)
+
+2. LEADERBOARD TAB
+   - Rankings for: Revenue, EBIT, ROCE, Share Price, Market Share, Morale
+   - Gold/Silver/Bronze indicators for top 3 positions
+   - Dynamic sorting based on selected period and universe
+
+3. FINANCIAL ANALYSIS TAB
+   - Complete financial table with all metrics for all teams
+   - ROCE comparison chart
+   - Cash position chart
+
+4. SEGMENTS TAB
+   - Revenue breakdown by market segments:
+     * Low Cost segment
+     * Family segment
+     * Eco segment
+     * Image CVC2020 segment
+
+5. HEAD-TO-HEAD TAB
+   - Select any two teams for direct comparison
+   - Side-by-side metric comparison with winner highlighting
+   - Performance trend chart comparing both teams over time
+   - Segment performance comparison bar chart
+
+6. TRENDS TAB
+   - Revenue trend line chart (P5-P9)
+   - EBIT trend line chart (P5-P9)
+   - Share price trend line chart (P5-P9)
+   - ROCE trend line chart (P5-P9)
+
+7. PPT GENERATOR TAB
+   - Select team and universe
+   - Input team members
+   - Fill in reflection sections:
+     * Simulation experience (decisions, what worked, challenges)
+     * Strategy concepts applied
+     * Lessons learned
+   - Generates downloadable PowerPoint presentation
+   - All fields are OPTIONAL (displays "Not specified" if empty)
+
+================================================================================
+                          TECHNICAL DETAILS
+================================================================================
+
+TECHNOLOGY STACK:
+- HTML5
+- CSS3 (Custom styling with CSS variables)
+- Vanilla JavaScript
+- Chart.js (for charts and visualizations)
+- PptxGenJS (for PowerPoint generation)
+
+CDN DEPENDENCIES:
+- Chart.js: https://cdn.jsdelivr.net/npm/chart.js
+- PptxGenJS: https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js
+
+IMPORTANT NOTE ON PPTXGENJS:
+The correct CDN URL uses "pptxgen.bundle.js" (NOT "pptxgenjs.bundle.js").
+This was a critical fix - the filename does not include "js" before ".bundle".
+
+COLOR SCHEME:
+- Team Red: #e74c3c
+- Team Blue: #3498db
+- Team Yellow: #f1c40f
+- Team Green: #27ae60
+- Team Purple: #9b59b6
+- MBSC Gold: #c5a028
+- Dark Background: #1a1a2e
+- Darker Background: #16213e
+- Accent: #0f3460
+
+================================================================================
+                           FILE STRUCTURE
+================================================================================
+
+team-red-dashboard/
+├── index.html              # Main dashboard file (all code in single file)
+├── mbsc-logo.png           # MBSC logo image used in header and footer
+├── PROJECT_DOCUMENTATION.txt   # This documentation file
+└── .git/                   # Git repository folder
+
+================================================================================
+                           DATA STRUCTURE
+================================================================================
+
+The simulation data is stored in a JavaScript object called `simulationData`
+within the index.html file (starting around line 854).
+
+Structure:
+simulationData = {
+    "1": {  // Universe 1
+        "P5": {
+            "Red": { revenue, ebit, roce, sharePrice, cash, morale, marketShare, lowCost, family, eco, image },
+            "Blue": { ... },
+            "Yellow": { ... },
+            "Green": { ... },
+            "Purple": { ... }
+        },
+        "P6": { ... },
+        "P7": { ... },
+        "P8": { ... },
+        "P9": { ... }
+    },
+    "2": {  // Universe 2
+        // Same structure as Universe 1
+    }
+}
+
+METRICS INCLUDED:
+- revenue: Total revenue ($)
+- ebit: Earnings Before Interest and Taxes ($)
+- roce: Return on Capital Employed (%)
+- sharePrice: Stock price ($)
+- cash: Cash position ($)
+- morale: Employee morale (%)
+- marketShare: Market share (%)
+- lowCost: Revenue from Low Cost segment ($)
+- family: Revenue from Family segment ($)
+- eco: Revenue from Eco segment ($)
+- image: Revenue from Image CVC2020 segment ($)
+
+================================================================================
+                      CHANGES & FIXES HISTORY
+================================================================================
+
+DATE: January 11, 2026
+
+ISSUE: PPT Generator button not working
+
+ROOT CAUSE:
+The PptxGenJS library CDN URL was incorrect. Multiple attempts were made:
+1. cdnjs URL with wrong filename
+2. unpkg URL returning Node.js version (caused "require is not defined" error)
+3. Various jsdelivr paths returning 404 errors
+
+SOLUTION:
+The correct CDN URL is:
+https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js
+
+Key insight: The file is named "pptxgen.bundle.js" NOT "pptxgenjs.bundle.js"
+
+ADDITIONAL IMPROVEMENTS MADE:
+1. Added try-catch error handling in generatePPT() function
+2. Added library availability check before generating PPT
+3. Added user-friendly error alerts
+4. Added success/error feedback for PPT generation
+
+================================================================================
+                      HOW TO MODIFY DATA
+================================================================================
+
+To update simulation data for new periods or corrections:
+
+1. Open index.html in a text editor
+2. Find the `simulationData` object (around line 854)
+3. Locate the universe and period you want to modify
+4. Update the values for each team
+5. Save the file
+6. Commit and push to GitHub (Vercel will auto-deploy)
+
+Example - To update Team Red's P9 data in Universe 2:
+```javascript
+"P9": {
+    "Red": {
+        revenue: 20100,    // Update these values
+        ebit: 1850,
+        roce: 6.5,
+        sharePrice: 22,
+        cash: 26500,
+        morale: 62,
+        marketShare: 22.5,
+        lowCost: 3100,
+        family: 4500,
+        eco: 3200,
+        image: 9300
+    },
+    ...
+}
+```
+
+================================================================================
+                      HOW TO ADD NEW FEATURES
+================================================================================
+
+ADDING A NEW CHART:
+1. Add HTML canvas element in the appropriate tab section
+2. Create chart using createBarChart(), createLineChart(), or createPieChart()
+3. Call the chart creation in updateCharts() function
+
+ADDING A NEW TAB:
+1. Add nav-tab div in the nav-tabs section
+2. Add corresponding tab-content div in main-content
+3. Add onclick handler calling switchTab('newTabId')
+4. Implement tab content and any necessary update functions
+
+ADDING NEW METRICS:
+1. Add the metric to the simulationData object for all teams/periods
+2. Update relevant display functions (updateOverviewKPIs, updateLeaderboard, etc.)
+3. Add any new charts or tables as needed
+
+================================================================================
+                        DEPLOYMENT
+================================================================================
+
+HOSTING: Vercel (automatic deployment from GitHub)
+REPOSITORY: https://github.com/YNaljehani/team-red-dashboard-
+BRANCH: main
+
+DEPLOYMENT WORKFLOW:
+1. Make changes to index.html locally
+2. Stage changes: git add -A
+3. Commit: git commit -m "Description of changes"
+4. Push: git push origin main
+5. Vercel automatically deploys within ~30 seconds
+6. Hard refresh browser (Ctrl+Shift+R) to see changes
+
+================================================================================
+                      TROUBLESHOOTING
+================================================================================
+
+ISSUE: Charts not displaying
+SOLUTION: Check browser console for errors. Ensure Chart.js CDN is loading.
+
+ISSUE: PPT Generator shows "library failed to load"
+SOLUTION: Verify the PptxGenJS CDN URL is correct:
+https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js
+
+ISSUE: Changes not appearing after push
+SOLUTION:
+1. Wait 30-60 seconds for Vercel deployment
+2. Hard refresh browser (Ctrl+Shift+R)
+3. Check Vercel dashboard for deployment status
+
+ISSUE: Data showing wrong values
+SOLUTION: Check the simulationData object for the correct universe/period
+
+================================================================================
+                       FUTURE ENHANCEMENTS
+================================================================================
+
+Potential improvements for future development:
+
+1. External Data Source - Move data to JSON file or database
+2. Data Import Feature - Upload CSV/Excel to update data
+3. User Authentication - Restrict access to authorized users
+4. Export Features - PDF reports, Excel exports
+5. Predictive Analytics - Forecast future performance
+6. What-If Scenarios - Simulate different decisions
+7. Mobile Optimization - Better responsive design for phones
+8. Real-time Updates - WebSocket connection for live data
+9. Instructor Comments - Annotation system for feedback
+10. Historical Comparison - Compare across different cohorts
+
+================================================================================
+                          CONTACT
+================================================================================
+
+For questions or modifications, refer to this documentation or contact
+the original developer through the GitHub repository.
+
+================================================================================
+                      END OF DOCUMENTATION
+================================================================================
