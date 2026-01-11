@@ -1036,7 +1036,8 @@
                 <label>Universe</label>
                 <select id="universeSelect" onchange="updateDashboard()">
                     <option value="1">Universe 1</option>
-                    <option value="2" selected>Universe 2</option>
+                    <option value="2">Universe 2</option>
+                    <option value="all" selected>All Universes</option>
                 </select>
             </div>
             <div class="control-group">
@@ -1520,6 +1521,45 @@
             };
         }
 
+        // Get combined data for all universes (averages both universes)
+        function getCombinedUniverseData(period) {
+            const u1 = simulationData["1"][period];
+            const u2 = simulationData["2"][period];
+            const combined = {};
+
+            teams.forEach(team => {
+                combined[team] = {
+                    revenue: Math.round((u1[team].revenue + u2[team].revenue) / 2),
+                    ebit: Math.round((u1[team].ebit + u2[team].ebit) / 2),
+                    roce: parseFloat(((u1[team].roce + u2[team].roce) / 2).toFixed(1)),
+                    sharePrice: Math.round((u1[team].sharePrice + u2[team].sharePrice) / 2),
+                    cash: Math.round((u1[team].cash + u2[team].cash) / 2),
+                    morale: Math.round((u1[team].morale + u2[team].morale) / 2),
+                    marketShare: parseFloat(((u1[team].marketShare + u2[team].marketShare) / 2).toFixed(1)),
+                    lowCost: Math.round((u1[team].lowCost + u2[team].lowCost) / 2),
+                    family: Math.round((u1[team].family + u2[team].family) / 2),
+                    eco: Math.round((u1[team].eco + u2[team].eco) / 2),
+                    image: Math.round((u1[team].image + u2[team].image) / 2)
+                };
+            });
+
+            return combined;
+        }
+
+        // Get data for selected universe (or combined if "all")
+        function getUniverseData(universe, period) {
+            if (universe === 'all') {
+                return getCombinedUniverseData(period);
+            }
+            return simulationData[universe][period];
+        }
+
+        // Get universe label for display
+        function getUniverseLabel(universe) {
+            if (universe === 'all') return 'All Universes (Avg)';
+            return `Universe ${universe}`;
+        }
+
         // Format currency
         function formatCurrency(value) {
             return '$' + value.toLocaleString();
@@ -1528,7 +1568,7 @@
         // Update Overview KPIs
         function updateOverviewKPIs() {
             const { universe, period } = getSelection();
-            const data = simulationData[universe][period];
+            const data = getUniverseData(universe, period);
             const container = document.getElementById('overviewKPIs');
 
             let html = '';
@@ -1548,7 +1588,7 @@
         // Update Leaderboard
         function updateLeaderboard() {
             const { universe, period } = getSelection();
-            const data = simulationData[universe][period];
+            const data = getUniverseData(universe, period);
             const container = document.getElementById('leaderboardContainer');
 
             const metrics = [
@@ -1591,7 +1631,7 @@
         // Update Financial Table
         function updateFinancialTable() {
             const { universe, period } = getSelection();
-            const data = simulationData[universe][period];
+            const data = getUniverseData(universe, period);
             const table = document.getElementById('financialTable');
 
             table.innerHTML = `
@@ -1717,7 +1757,7 @@
         // Update all charts
         function updateCharts() {
             const { universe, period } = getSelection();
-            const data = simulationData[universe][period];
+            const data = getUniverseData(universe, period);
 
             // Revenue Chart
             createBarChart('revenueChart', teams, [{
@@ -1777,12 +1817,23 @@
 
         function updateTrendCharts() {
             const { universe } = getSelection();
-            const uData = simulationData[universe];
+
+            // Get data for each period (handles "all" universes)
+            const getTrendData = (metric) => {
+                return teams.map(team => ({
+                    label: `Team ${team}`,
+                    data: periods.map(p => getUniverseData(universe, p)[team][metric]),
+                    borderColor: teamColors[team],
+                    backgroundColor: teamColors[team] + '40',
+                    tension: 0.3,
+                    fill: false
+                }));
+            };
 
             // Revenue Trend
             createLineChart('revenueTrendChart', periods, teams.map(team => ({
                 label: `Team ${team}`,
-                data: periods.map(p => uData[p][team].revenue),
+                data: periods.map(p => getUniverseData(universe, p)[team].revenue),
                 borderColor: teamColors[team],
                 backgroundColor: teamColors[team] + '40',
                 tension: 0.3,
@@ -1792,7 +1843,7 @@
             // EBIT Trend
             createLineChart('ebitTrendChart', periods, teams.map(team => ({
                 label: `Team ${team}`,
-                data: periods.map(p => uData[p][team].ebit),
+                data: periods.map(p => getUniverseData(universe, p)[team].ebit),
                 borderColor: teamColors[team],
                 backgroundColor: teamColors[team] + '40',
                 tension: 0.3,
@@ -1802,7 +1853,7 @@
             // Share Price Trend
             createLineChart('shareTrendChart', periods, teams.map(team => ({
                 label: `Team ${team}`,
-                data: periods.map(p => uData[p][team].sharePrice),
+                data: periods.map(p => getUniverseData(universe, p)[team].sharePrice),
                 borderColor: teamColors[team],
                 backgroundColor: teamColors[team] + '40',
                 tension: 0.3,
@@ -1812,7 +1863,7 @@
             // ROCE Trend
             createLineChart('roceTrendChart', periods, teams.map(team => ({
                 label: `Team ${team}`,
-                data: periods.map(p => uData[p][team].roce),
+                data: periods.map(p => getUniverseData(universe, p)[team].roce),
                 borderColor: teamColors[team],
                 backgroundColor: teamColors[team] + '40',
                 tension: 0.3,
@@ -1823,7 +1874,7 @@
         // Head to Head functionality
         function updateH2H() {
             const { universe, period } = getSelection();
-            const data = simulationData[universe][period];
+            const data = getUniverseData(universe, period);
             const team1 = document.getElementById('h2hTeam1').value;
             const team2 = document.getElementById('h2hTeam2').value;
 
@@ -1876,11 +1927,10 @@
             document.getElementById('h2hComparison').innerHTML = html;
 
             // H2H Trend Chart
-            const uData = simulationData[universe];
             createLineChart('h2hTrendChart', periods, [
                 {
                     label: `Team ${team1}`,
-                    data: periods.map(p => uData[p][team1].revenue),
+                    data: periods.map(p => getUniverseData(universe, p)[team1].revenue),
                     borderColor: teamColors[team1],
                     backgroundColor: teamColors[team1] + '40',
                     tension: 0.3,
@@ -1888,7 +1938,7 @@
                 },
                 {
                     label: `Team ${team2}`,
-                    data: periods.map(p => uData[p][team2].revenue),
+                    data: periods.map(p => getUniverseData(universe, p)[team2].revenue),
                     borderColor: teamColors[team2],
                     backgroundColor: teamColors[team2] + '40',
                     tension: 0.3,
@@ -2209,7 +2259,8 @@
         function processAIQuestion(question) {
             const q = question.toLowerCase();
             const { universe, period } = getSelection();
-            const data = simulationData[universe][period];
+            const data = getUniverseData(universe, period);
+            const universeLabel = getUniverseLabel(universe);
 
             // Helper functions
             const formatMoney = (v) => '$' + v.toLocaleString();
@@ -2398,26 +2449,24 @@
             if (q.includes('trend') || q.includes('history') || q.includes('over time') || q.includes('growth')) {
                 const team = getTeamFromQuestion();
                 if (team) {
-                    const uData = simulationData[universe];
-                    const p5Rev = uData['P5'][team].revenue;
-                    const p9Rev = uData['P9'][team].revenue;
+                    const p5Rev = getUniverseData(universe, 'P5')[team].revenue;
+                    const p9Rev = getUniverseData(universe, 'P9')[team].revenue;
                     const growth = ((p9Rev - p5Rev) / p5Rev * 100).toFixed(1);
                     const direction = growth > 0 ? 'increased' : 'decreased';
 
-                    let response = `<strong>Team ${team} Revenue Trend</strong> (Universe ${universe}):<br><br>`;
+                    let response = `<strong>Team ${team} Revenue Trend</strong> (${universeLabel}):<br><br>`;
                     periods.forEach(p => {
-                        response += `${p}: ${formatMoney(uData[p][team].revenue)}<br>`;
+                        response += `${p}: ${formatMoney(getUniverseData(universe, p)[team].revenue)}<br>`;
                     });
                     response += `<br>Revenue ${direction} by <strong>${Math.abs(growth)}%</strong> from P5 to P9.`;
                     return response;
                 }
 
                 // All teams trend summary
-                const uData = simulationData[universe];
-                let response = `<strong>Revenue Growth P5→P9</strong> (Universe ${universe}):<br><br>`;
+                let response = `<strong>Revenue Growth P5→P9</strong> (${universeLabel}):<br><br>`;
                 const growthData = teams.map(t => {
-                    const p5 = uData['P5'][t].revenue;
-                    const p9 = uData['P9'][t].revenue;
+                    const p5 = getUniverseData(universe, 'P5')[t].revenue;
+                    const p9 = getUniverseData(universe, 'P9')[t].revenue;
                     return { team: t, growth: ((p9 - p5) / p5 * 100).toFixed(1) };
                 }).sort((a, b) => b.growth - a.growth);
 
