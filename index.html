@@ -535,6 +535,226 @@
                 padding: 15px;
             }
         }
+
+        /* AI Assistant Styles */
+        .ai-chat-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--mbsc-gold), #a08020);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(197, 160, 40, 0.4);
+            z-index: 1000;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-chat-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(197, 160, 40, 0.6);
+        }
+
+        .ai-chat-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: #1a1a2e;
+        }
+
+        .ai-chat-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            max-width: calc(100vw - 60px);
+            height: 500px;
+            max-height: calc(100vh - 150px);
+            background: var(--darker);
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .ai-chat-panel.active {
+            display: flex;
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(90deg, var(--darker) 0%, var(--accent) 100%);
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--mbsc-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-chat-header h4 {
+            margin: 0;
+            color: var(--mbsc-gold);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-chat-close {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .ai-chat-close:hover {
+            color: #fff;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-message {
+            max-width: 85%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .ai-message.assistant {
+            background: var(--accent);
+            color: #e8e8e8;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .ai-message.user {
+            background: var(--mbsc-gold);
+            color: #1a1a2e;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message strong {
+            color: var(--mbsc-gold);
+        }
+
+        .ai-message.assistant strong {
+            color: #f1c40f;
+        }
+
+        .ai-chat-input-area {
+            padding: 15px;
+            border-top: 1px solid var(--accent);
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 25px;
+            border: 1px solid var(--accent);
+            background: var(--dark);
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .ai-chat-input:focus {
+            border-color: var(--mbsc-gold);
+        }
+
+        .ai-chat-input::placeholder {
+            color: #666;
+        }
+
+        .ai-chat-send {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--mbsc-gold);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .ai-chat-send:hover {
+            background: #d4af37;
+        }
+
+        .ai-chat-send svg {
+            width: 20px;
+            height: 20px;
+            fill: #1a1a2e;
+        }
+
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .ai-suggestion {
+            background: rgba(197, 160, 40, 0.2);
+            border: 1px solid var(--mbsc-gold);
+            color: var(--mbsc-gold);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .ai-suggestion:hover {
+            background: rgba(197, 160, 40, 0.4);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 15px;
+            background: var(--accent);
+            border-radius: 12px;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #888;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
     </style>
 </head>
 <body>
@@ -848,6 +1068,44 @@
         <p>MEGA Learning Simulation Dashboard - Mohammed bin Salman College</p>
         <p style="margin-top: 5px;">MiM 2026 - Riyadh, Saudi Arabia</p>
     </footer>
+
+    <!-- AI Data Assistant -->
+    <button class="ai-chat-btn" onclick="toggleAIChat()" title="Data Assistant">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+    </button>
+
+    <div class="ai-chat-panel" id="aiChatPanel">
+        <div class="ai-chat-header">
+            <h4>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+                Data Assistant
+            </h4>
+            <button class="ai-chat-close" onclick="toggleAIChat()">&times;</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-message assistant">
+                Hello! I'm your Data Assistant. I can help you analyze the simulation data. Try asking me:
+                <div class="ai-suggestions">
+                    <span class="ai-suggestion" onclick="askSuggestion('Who is leading in revenue?')">Who is leading?</span>
+                    <span class="ai-suggestion" onclick="askSuggestion('Compare Red and Purple teams')">Compare teams</span>
+                    <span class="ai-suggestion" onclick="askSuggestion('Show market share rankings')">Rankings</span>
+                    <span class="ai-suggestion" onclick="askSuggestion('What is the revenue trend for all teams?')">Trends</span>
+                </div>
+            </div>
+        </div>
+        <div class="ai-chat-input-area">
+            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ask about the data..." onkeypress="handleAIKeyPress(event)">
+            <button class="ai-chat-send" onclick="sendAIMessage()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
     <script>
         // Complete simulation data for both universes
@@ -1504,6 +1762,334 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateDashboard();
         });
+
+        // ==================== AI DATA ASSISTANT ====================
+
+        function toggleAIChat() {
+            const panel = document.getElementById('aiChatPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.getElementById('aiChatInput').focus();
+            }
+        }
+
+        function handleAIKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        function askSuggestion(question) {
+            document.getElementById('aiChatInput').value = question;
+            sendAIMessage();
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
+            const question = input.value.trim();
+            if (!question) return;
+
+            const messagesContainer = document.getElementById('aiChatMessages');
+
+            // Add user message
+            messagesContainer.innerHTML += `<div class="ai-message user">${escapeHtml(question)}</div>`;
+            input.value = '';
+
+            // Add typing indicator
+            messagesContainer.innerHTML += `<div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>`;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Process after short delay for effect
+            setTimeout(() => {
+                const response = processAIQuestion(question);
+                document.getElementById('typingIndicator')?.remove();
+                messagesContainer.innerHTML += `<div class="ai-message assistant">${response}</div>`;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 500 + Math.random() * 500);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function processAIQuestion(question) {
+            const q = question.toLowerCase();
+            const { universe, period } = getSelection();
+            const data = simulationData[universe][period];
+
+            // Helper functions
+            const formatMoney = (v) => '$' + v.toLocaleString();
+            const getRankings = (metric) => {
+                return teams.map(t => ({ team: t, value: data[t][metric] }))
+                    .sort((a, b) => b.value - a.value);
+            };
+            const getTeamFromQuestion = () => {
+                for (const team of teams) {
+                    if (q.includes(team.toLowerCase())) return team;
+                }
+                return null;
+            };
+            const getTwoTeams = () => {
+                const found = teams.filter(t => q.includes(t.toLowerCase()));
+                return found.length >= 2 ? found.slice(0, 2) : null;
+            };
+
+            // REVENUE queries
+            if (q.includes('revenue') || q.includes('leading') || q.includes('leader') || q.includes('top') || q.includes('best') || q.includes('highest')) {
+                if (q.includes('lowest') || q.includes('worst') || q.includes('bottom')) {
+                    const rankings = getRankings('revenue');
+                    const last = rankings[rankings.length - 1];
+                    return `In Universe ${universe}, Period ${period.slice(1)}, <strong>Team ${last.team}</strong> has the lowest revenue at <strong>${formatMoney(last.value)}</strong>.`;
+                }
+                const team = getTeamFromQuestion();
+                if (team) {
+                    const rank = getRankings('revenue').findIndex(r => r.team === team) + 1;
+                    return `<strong>Team ${team}</strong> has revenue of <strong>${formatMoney(data[team].revenue)}</strong> in Period ${period.slice(1)}, ranking <strong>#${rank}</strong> among all teams.`;
+                }
+                const rankings = getRankings('revenue');
+                let response = `<strong>Revenue Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: ${formatMoney(r.value)}<br>`;
+                });
+                return response;
+            }
+
+            // EBIT queries
+            if (q.includes('ebit') || q.includes('profit') || q.includes('earnings')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    const ebit = data[team].ebit;
+                    const status = ebit >= 0 ? 'profit' : 'loss';
+                    return `<strong>Team ${team}</strong> has EBIT of <strong>${formatMoney(ebit)}</strong> (${status}) in Period ${period.slice(1)}.`;
+                }
+                const rankings = getRankings('ebit');
+                let response = `<strong>EBIT Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    const status = r.value >= 0 ? '' : ' (loss)';
+                    response += `${medal} Team ${r.team}: ${formatMoney(r.value)}${status}<br>`;
+                });
+                return response;
+            }
+
+            // ROCE queries
+            if (q.includes('roce') || q.includes('return on capital')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    return `<strong>Team ${team}</strong> has ROCE of <strong>${data[team].roce}%</strong> in Period ${period.slice(1)}.`;
+                }
+                const rankings = getRankings('roce');
+                let response = `<strong>ROCE Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: ${r.value}%<br>`;
+                });
+                return response;
+            }
+
+            // Share Price queries
+            if (q.includes('share') || q.includes('stock') || q.includes('price')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    const rank = getRankings('sharePrice').findIndex(r => r.team === team) + 1;
+                    return `<strong>Team ${team}</strong> has share price of <strong>$${data[team].sharePrice}</strong>, ranking #${rank}.`;
+                }
+                const rankings = getRankings('sharePrice');
+                let response = `<strong>Share Price Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: $${r.value}<br>`;
+                });
+                return response;
+            }
+
+            // Market Share queries
+            if (q.includes('market share') || q.includes('market')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    return `<strong>Team ${team}</strong> has <strong>${data[team].marketShare}%</strong> market share in Period ${period.slice(1)}.`;
+                }
+                const rankings = getRankings('marketShare');
+                let response = `<strong>Market Share Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: ${r.value}%<br>`;
+                });
+                return response;
+            }
+
+            // Morale queries
+            if (q.includes('morale') || q.includes('employee')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    return `<strong>Team ${team}</strong> has employee morale of <strong>${data[team].morale}%</strong>.`;
+                }
+                const rankings = getRankings('morale');
+                let response = `<strong>Morale Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: ${r.value}%<br>`;
+                });
+                return response;
+            }
+
+            // Cash queries
+            if (q.includes('cash') || q.includes('liquidity')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    return `<strong>Team ${team}</strong> has cash position of <strong>${formatMoney(data[team].cash)}</strong>.`;
+                }
+                const rankings = getRankings('cash');
+                let response = `<strong>Cash Position Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: ${formatMoney(r.value)}<br>`;
+                });
+                return response;
+            }
+
+            // Segment queries
+            if (q.includes('segment') || q.includes('low cost') || q.includes('family') || q.includes('eco') || q.includes('image')) {
+                let segment = 'revenue';
+                let segmentName = 'All Segments';
+                if (q.includes('low cost')) { segment = 'lowCost'; segmentName = 'Low Cost'; }
+                else if (q.includes('family')) { segment = 'family'; segmentName = 'Family'; }
+                else if (q.includes('eco')) { segment = 'eco'; segmentName = 'Eco'; }
+                else if (q.includes('image')) { segment = 'image'; segmentName = 'Image CVC2020'; }
+
+                const rankings = getRankings(segment);
+                let response = `<strong>${segmentName} Segment Rankings</strong> (Universe ${universe}, ${period}):<br><br>`;
+                rankings.forEach((r, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    response += `${medal} Team ${r.team}: ${formatMoney(r.value)}<br>`;
+                });
+                return response;
+            }
+
+            // Compare two teams
+            if (q.includes('compare') || q.includes('vs') || q.includes('versus') || q.includes('difference')) {
+                const twoTeams = getTwoTeams();
+                if (twoTeams) {
+                    const [t1, t2] = twoTeams;
+                    const d1 = data[t1];
+                    const d2 = data[t2];
+                    const metrics = [
+                        { key: 'revenue', label: 'Revenue', format: formatMoney },
+                        { key: 'ebit', label: 'EBIT', format: formatMoney },
+                        { key: 'roce', label: 'ROCE', format: v => v + '%' },
+                        { key: 'sharePrice', label: 'Share Price', format: v => '$' + v },
+                        { key: 'marketShare', label: 'Market Share', format: v => v + '%' }
+                    ];
+
+                    let response = `<strong>Team ${t1} vs Team ${t2}</strong> (${period}):<br><br>`;
+                    let t1Wins = 0, t2Wins = 0;
+
+                    metrics.forEach(m => {
+                        const v1 = d1[m.key];
+                        const v2 = d2[m.key];
+                        const winner = v1 > v2 ? t1 : v2 > v1 ? t2 : 'Tie';
+                        if (v1 > v2) t1Wins++;
+                        else if (v2 > v1) t2Wins++;
+                        response += `${m.label}: ${m.format(v1)} vs ${m.format(v2)} → <strong>${winner}</strong><br>`;
+                    });
+
+                    response += `<br><strong>Overall: Team ${t1Wins > t2Wins ? t1 : t2} leads ${Math.max(t1Wins, t2Wins)}-${Math.min(t1Wins, t2Wins)}</strong>`;
+                    return response;
+                }
+                return `Please specify two teams to compare. For example: "Compare Red and Blue teams"`;
+            }
+
+            // Trend analysis
+            if (q.includes('trend') || q.includes('history') || q.includes('over time') || q.includes('growth')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    const uData = simulationData[universe];
+                    const p5Rev = uData['P5'][team].revenue;
+                    const p9Rev = uData['P9'][team].revenue;
+                    const growth = ((p9Rev - p5Rev) / p5Rev * 100).toFixed(1);
+                    const direction = growth > 0 ? 'increased' : 'decreased';
+
+                    let response = `<strong>Team ${team} Revenue Trend</strong> (Universe ${universe}):<br><br>`;
+                    periods.forEach(p => {
+                        response += `${p}: ${formatMoney(uData[p][team].revenue)}<br>`;
+                    });
+                    response += `<br>Revenue ${direction} by <strong>${Math.abs(growth)}%</strong> from P5 to P9.`;
+                    return response;
+                }
+
+                // All teams trend summary
+                const uData = simulationData[universe];
+                let response = `<strong>Revenue Growth P5→P9</strong> (Universe ${universe}):<br><br>`;
+                const growthData = teams.map(t => {
+                    const p5 = uData['P5'][t].revenue;
+                    const p9 = uData['P9'][t].revenue;
+                    return { team: t, growth: ((p9 - p5) / p5 * 100).toFixed(1) };
+                }).sort((a, b) => b.growth - a.growth);
+
+                growthData.forEach((g, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    const arrow = g.growth > 0 ? '📈' : '📉';
+                    response += `${medal} Team ${g.team}: ${g.growth > 0 ? '+' : ''}${g.growth}% ${arrow}<br>`;
+                });
+                return response;
+            }
+
+            // Summary / Overview
+            if (q.includes('summary') || q.includes('overview') || q.includes('tell me about') || q.includes('how is')) {
+                const team = getTeamFromQuestion();
+                if (team) {
+                    const d = data[team];
+                    const revRank = getRankings('revenue').findIndex(r => r.team === team) + 1;
+                    const ebitRank = getRankings('ebit').findIndex(r => r.team === team) + 1;
+                    const shareRank = getRankings('sharePrice').findIndex(r => r.team === team) + 1;
+
+                    return `<strong>Team ${team} Summary</strong> (Universe ${universe}, ${period}):<br><br>` +
+                        `Revenue: ${formatMoney(d.revenue)} (#${revRank})<br>` +
+                        `EBIT: ${formatMoney(d.ebit)} (#${ebitRank})<br>` +
+                        `ROCE: ${d.roce}%<br>` +
+                        `Share Price: $${d.sharePrice} (#${shareRank})<br>` +
+                        `Market Share: ${d.marketShare}%<br>` +
+                        `Cash: ${formatMoney(d.cash)}<br>` +
+                        `Morale: ${d.morale}%`;
+                }
+            }
+
+            // Winner / Champion
+            if (q.includes('winner') || q.includes('champion') || q.includes('who won')) {
+                const revLeader = getRankings('revenue')[0];
+                const ebitLeader = getRankings('ebit')[0];
+                const shareLeader = getRankings('sharePrice')[0];
+
+                return `<strong>Current Leaders</strong> (Universe ${universe}, ${period}):<br><br>` +
+                    `🏆 Revenue: Team ${revLeader.team} (${formatMoney(revLeader.value)})<br>` +
+                    `🏆 EBIT: Team ${ebitLeader.team} (${formatMoney(ebitLeader.value)})<br>` +
+                    `🏆 Share Price: Team ${shareLeader.team} ($${shareLeader.value})`;
+            }
+
+            // Help
+            if (q.includes('help') || q.includes('what can you')) {
+                return `I can help you analyze the simulation data. Try asking:<br><br>` +
+                    `• "Who is leading in revenue?"<br>` +
+                    `• "Show EBIT rankings"<br>` +
+                    `• "Compare Red and Purple teams"<br>` +
+                    `• "What is Blue's market share?"<br>` +
+                    `• "Show revenue trend for Green"<br>` +
+                    `• "Which team has best ROCE?"<br>` +
+                    `• "Summary of Yellow team"<br>` +
+                    `• "Low cost segment rankings"`;
+            }
+
+            // Default response
+            return `I understand you're asking about "${question}". Try being more specific, like:<br><br>` +
+                `• "Show revenue rankings"<br>` +
+                `• "Compare Red and Blue"<br>` +
+                `• "What is Purple's EBIT?"<br>` +
+                `• "Revenue trend for all teams"<br><br>` +
+                `Currently viewing: <strong>Universe ${universe}, Period ${period.slice(1)}</strong>`;
+        }
     </script>
 </body>
 </html>
